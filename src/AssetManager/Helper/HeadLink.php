@@ -32,6 +32,8 @@ class HeadLink extends StandardHeadLink
         $aggregateResolver = $mainLocator->get('AssetManager\Service\AggregateResolver');
         $cacheController = $mainLocator->get('AssetManager\Service\CacheController');
 
+        $assetManager = $mainLocator->get('AssetManager\Service\AssetManager');
+        $filterManager = $mainLocator->get('AssetManager\Service\AssetFilterManager');
         if (!$cacheController->hasMagicEtag()) {
             return $value;
         }
@@ -39,8 +41,9 @@ class HeadLink extends StandardHeadLink
         $container = $this->getContainer();
         foreach ($container as $element) {
             $asset = $aggregateResolver->resolve($element->href);
-            $etag = $cacheController->calculateEtag($asset);
-            $value = str_replace($element->href, $element->href.';ETag'.$etag, $value);
+            $factory = new \Assetic\Factory\AssetFactory($asset->getSourceRoot());
+            $checksum = $factory->generateAssetName($asset, $filterManager->getFilters($asset->getSourceRoot(), $asset));
+            $value = str_replace($element->href, $element->href.';ETag'.$checksum, $value);
         }
 
         return $value;

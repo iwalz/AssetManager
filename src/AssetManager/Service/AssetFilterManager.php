@@ -66,19 +66,10 @@ class AssetFilterManager implements ServiceLocatorAwareInterface, MimeResolverAw
      */
     public function setFilters($path, AssetInterface $asset)
     {
-        $config = $this->getConfig();
+        $filters = $this->getFilters($path, $asset);
 
-        if (!empty($config[$path])) {
-            $filters = $config[$path];
-        } elseif (!empty($config[$asset->mimetype])) {
-            $filters = $config[$asset->mimetype];
-        } else {
-            $extension = $this->getMimeResolver()->getExtension($asset->mimetype);
-            if (!empty($config[$extension])) {
-                $filters = $config[$extension];
-            } else {
-                return;
-            }
+        if (!$filters) {
+            return;
         }
 
         foreach ($filters as $filter) {
@@ -92,6 +83,32 @@ class AssetFilterManager implements ServiceLocatorAwareInterface, MimeResolverAw
                 );
             }
         }
+    }
+
+    /**
+     * See if there are filters for the asset, and if so, get them.
+     *
+     * @param   string          $path
+     * @param   AssetInterface  $asset
+     */
+    public function getFilters($path, AssetInterface $asset)
+    {
+        $config = $this->getConfig();
+
+        if (!empty($config[$path])) {
+            $filters = $config[$path];
+        } elseif (!empty($config[$asset->mimetype])) {
+            $filters = $config[$asset->mimetype];
+        } else {
+            $extension = $this->getMimeResolver()->getExtension($asset->mimetype);
+            if (!empty($config[$extension])) {
+                $filters = $config[$extension];
+            } else {
+                return false;
+            }
+        }
+
+        return $filters;
     }
 
     /**
