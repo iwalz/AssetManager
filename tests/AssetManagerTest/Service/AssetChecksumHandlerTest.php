@@ -6,7 +6,7 @@ use AssetManager\Service\AssetChecksumHandler;
 use PHPUnit_Framework_TestCase;
 use Zend\ServiceManager\ServiceManager;
 
-class AssetChecksumHandlerServiceFactoryTest extends PHPUnit_Framework_TestCase
+class AssetChecksumHandlerTest extends PHPUnit_Framework_TestCase
 {
     public function testValidInstanceFromFactory()
     {

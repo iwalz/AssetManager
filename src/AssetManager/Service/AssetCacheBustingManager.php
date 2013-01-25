@@ -4,6 +4,10 @@ namespace AssetManager\Service;
 
 class AssetCacheBustingManager
 {
+    const STRATEGY_NONE = 0;
+    const STRATEGY_MODIFICATION = 1;
+    const STRATEGY_CONTENT = 2;
+
     protected $config = array();
 
     public function __construct($config = array())
