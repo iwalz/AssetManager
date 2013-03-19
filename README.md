@@ -1,4 +1,4 @@
-# AssetManager 1.2.5
+# AssetManager 1.2.6
 By [Wesley Overdijk](http://blog.spoonx.nl/) and [Marco Pivetta](http://ocramius.github.com/)
 
 **Note:** This version includes a possible BC-break as it has switched to a different tag of assetic.
@@ -40,6 +40,9 @@ return array(
                     'js/b.js',
                     'js/c.js',
                 ),
+            ),
+            'paths' => array(
+                __DIR__ . '/some/particular/directory',
             ),
             'map' => array(
                 'specific-path.css' => __DIR__ . '/some/particular/file.css',
