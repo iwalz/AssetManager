@@ -5,27 +5,6 @@ namespace AssetManager\Service;
 class AssetCacheBustingManager
 {
     /**
-     * No hash
-     */
-    const STRATEGY_NONE         = 0;
-    /**
-     * Hash based on last modified timestamp
-     */
-    const STRATEGY_MODIFICATION = 1;
-    /**
-     * Hash based on the content checksum
-     */
-    const STRATEGY_CONTENT      = 2;
-    /**
-     * Hash based on a static value (e.g. a version number)
-     */
-    const STRATEGY_STATIC       = 4;
-    /**
-     * Random hash (for cache-versioning)
-     */
-    const STRATEGY_RANDOM       = 8;
-
-    /**
      * @var array
      */
     protected $config = array();
