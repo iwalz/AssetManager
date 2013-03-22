@@ -4,6 +4,8 @@ namespace AssetManager\Service;
 
 use Assetic\Asset\AssetInterface;
 use Zend\Http\Headers;
+use Zend\Http\Request;
+use Zend\Http\Response;
 
 /**
  * Cache controller service
@@ -19,15 +21,69 @@ class CacheController
     protected $config = array();
 
     /**
-     * @param array
+     * @var Request
      */
-    protected $etagStorage = array();
+    protected $request = null;
+
+    /**
+     * @var Response
+     */
+    protected $response = null;
 
     public function __construct($config = array())
     {
         if (isset($config['cache_control'])) {
             $this->setConfig($config['cache_control']);
         }
+
+        /** @var $headers  \Zend\Http\Headers */
+        /*$headers        = $request->getHeaders();
+        $uri            = $request->getUri();
+        $pos            = strpos($uri->getPath(), ';AM');
+
+        if (
+            $pos !== false
+            && $headers->has('If-None-Match')
+        ) {
+            $response->setStatusCode(304);
+            $responseHeaders = $response->getHeaders();
+            $responseHeaders->addHeaderLine('Cache-Control', '');
+            return $response;
+        }
+
+        if ($pos !== false) {
+            $uri->setPath(substr($uri->getPath(), 0, $pos));
+        }
+        if ($headers->has('If-Modified-Since')) {
+            $asset = $assetManager->resolve($request);
+            $lastModified = $asset->getLastModified();
+            $modifiedSince = strtotime($headers->get('If-Modified-Since')->getDate());
+
+            if ($lastModified <= $modifiedSince) {
+                $response->setStatusCode(304);
+                $responseHeaders = $response->getHeaders();
+                $responseHeaders->addHeaderLine('Cache-Control', '');
+                return $response;
+            }
+        }
+
+        if ($headers->has('If-None-Match')) {
+            $cacheController = $assetManager->getCacheController();
+            $asset = $assetManager->resolve($request);
+
+            $assetManager->getAssetFilterManager()->setFilters($uri, $asset);
+            $etag = $cacheController->calculateEtag($asset);
+
+            $match = $headers->get('If-None-Match')->getFieldValue();
+
+            if ($etag == $match) {
+                $response->setStatusCode(304);
+                $responseHeaders = $response->getHeaders();
+                $responseHeaders->addHeaderLine('Cache-Control', '');
+                return $response;
+            }
+        }
+        */
     }
 
     /**
@@ -111,14 +167,10 @@ class CacheController
         }
     }
 
+
+
     public function calculateEtag(AssetInterface $asset)
     {
-        $objectHash = spl_object_hash($asset);
-
-        if (isset($this->etagStorage[$objectHash])) {
-            return $this->etagStorage[$objectHash];
-        }
-
         $mtime = $asset->getLastModified();
         $size = null;
 
@@ -133,8 +185,27 @@ class CacheController
         // @codeCoverageIgnoreEnd
 
         $etag = sprintf('%x-%x-%016x', 1, $size, $mtime);
-        $this->etagStorage[$objectHash] = $etag;
 
         return $etag;
+    }
+
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    public function setResponse(Response $response)
+    {
+        $this->response = $response;
+    }
+
+    public function getResponse()
+    {
+        return $this->response;
     }
 }

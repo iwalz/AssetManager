@@ -70,20 +70,6 @@ class CacheControllerServiceFactoryTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($headers->has('Expires'));
     }
 
-    public function testEtagCalculationOnlyExecuteOnce()
-    {
-        $serviceManager = new ServiceManager();
-        $serviceManager->setService('Config', $this->config);
-
-        $factory = new CacheControllerServiceFactory();
-        $cacheController = $factory->createService($serviceManager);
-
-        $asset = $this->getMock('Assetic\Asset\StringAsset', array('getLastModified'), array('foo'));
-        $asset->expects($this->once())->method('getLastModified')->will($this->returnValue('Sat,19 Jan 2013 20:42:52 CET'));
-        $cacheController->calculateEtag($asset);
-        $cacheController->calculateEtag($asset);
-    }
-
     public function testGetLifeTimeCalculation()
     {
         $serviceManager = new ServiceManager();
