@@ -52,6 +52,17 @@ class RequestInspectorTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($requestInspector->isIfModifiedSinceRequest());
     }
 
+    public function testGetModifiedSince()
+    {
+        $request = $this->getMock('Zend\Http\Request', array('getHeaders'));
+        $headers = new Headers();
+        $headers->addHeaderLine('If-Modified-Since', 'Tue, 15 Jan 2013 17:58:53 GMT');
+        $request->expects($this->any())->method('getHeaders')->will($this->returnValue($headers));
+        $requestInspector = new RequestInspector($request);
+
+        $this->assertSame(1358272733, $requestInspector->getModifiedSince());
+    }
+
     public function testMoreComplexRequestSetupWithMixedRequests()
     {
         $request = $this->getMock('Zend\Http\Request', array('getHeaders', 'getUri'));

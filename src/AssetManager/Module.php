@@ -69,7 +69,8 @@ class Module implements
             return;
         }
 
-        $cachedResponse = $cacheController->handleRequest($assetManager->resolve($request));
+        $asset = $assetManager->resolve($request);
+        $cachedResponse = $cacheController->handleRequest($asset);
         if ($cachedResponse instanceof Response) {
 
             return $cachedResponse;

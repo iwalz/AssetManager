@@ -60,7 +60,7 @@ class CacheController
 
         if ($this->requestInspector->isIfModifiedSinceRequest()) {
             $lastModified = $asset->getLastModified();
-            $modifiedSince = strtotime($this->requestInspector->getRequest()->getHeaders()->get('If-Modified-Since')->getDate());
+            $modifiedSince = $this->requestInspector->getModifiedSince();
 
             if ($lastModified <= $modifiedSince) {
                 $this->responseModifier->enableNotModified();

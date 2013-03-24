@@ -95,4 +95,14 @@ class RequestInspector
 
         $uri->setPath(substr($uri->getPath(), 0, $pos));
     }
+
+    /**
+     * Get time timestamp of the If-Modified-Since header
+     *
+     * @return int
+     */
+    public function getModifiedSince()
+    {
+        return strtotime($this->request->getHeaders()->get('If-Modified-Since')->getDate());
+    }
 }

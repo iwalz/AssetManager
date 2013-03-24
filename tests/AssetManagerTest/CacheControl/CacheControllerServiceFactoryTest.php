@@ -1,6 +1,6 @@
 <?php
 
-namespace AssetManagerTest\Service;
+namespace AssetManagerTest\CacheControl;
 
 use PHPUnit_Framework_TestCase;
 use AssetManager\CacheControl\CacheControllerServiceFactory;
