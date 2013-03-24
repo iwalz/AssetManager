@@ -1,11 +1,10 @@
 <?php
 
-namespace AssetManager\Service;
+namespace AssetManager\CacheControl;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use AssetManager\Exception;
-use AssetManager\Service\CacheController;
 
 /**
  * Factory class for AssetManagerService
@@ -27,6 +26,10 @@ class CacheControllerServiceFactory implements FactoryInterface
         $config         = isset($config['asset_manager']) ? $config['asset_manager'] : array();
 
         $cacheController = new CacheController($config);
+        $requestInspector = new RequestInspector();
+        $responseModifier = new ResponseModifier();
+        $cacheController->setRequestInspector($requestInspector);
+        $cacheController->setResponseModifier($responseModifier);
 
         return $cacheController;
     }

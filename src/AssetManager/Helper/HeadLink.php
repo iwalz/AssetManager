@@ -30,7 +30,7 @@ class HeadLink extends StandardHeadLink
         /** @var $aggregateResolver \AssetManager\Resolver\AggregateResolver */
         $mainLocator = $this->sl->getServiceLocator();
         $aggregateResolver = $mainLocator->get('AssetManager\Service\AggregateResolver');
-        $cacheController = $mainLocator->get('AssetManager\Service\CacheController');
+        $cacheController = $mainLocator->get('AssetManager\CacheControl\CacheController');
 
         $container = $this->getContainer();
         foreach ($container as $element) {

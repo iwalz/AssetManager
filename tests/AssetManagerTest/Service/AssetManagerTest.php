@@ -156,7 +156,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
         $assetFilterManager = new \AssetManager\Service\AssetFilterManager($config['filters']);
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager();
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
 
         $response     = new Response;
         $resolver     = $this->getResolver(__DIR__ . '/../../_files/require-jquery.js');
@@ -185,7 +185,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
         $assetFilterManager = new \AssetManager\Service\AssetFilterManager($config['filters']);
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager();
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
 
         $mimeResolver = new MimeResolver;
         $response     = new Response;
@@ -217,7 +217,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
         $assetFilterManager = new \AssetManager\Service\AssetFilterManager($config['filters']);
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager();
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $mimeResolver       = new MimeResolver;
         $response           = new Response;
         $resolver           = $this->getResolver(__DIR__ . '/../../_files/require-jquery.js');
@@ -250,7 +250,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager();
         $mimeResolver       = new MimeResolver;
         $response           = new Response;
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $resolver           = $this->getResolver(__DIR__ . '/../../_files/require-jquery.js');
         $request            = $this->getRequest();
         $assetManager       = new AssetManager($resolver, $config);
@@ -277,7 +277,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager();
         $mimeResolver       = new MimeResolver;
         $response           = new Response;
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $resolver           = $this->getResolver(__DIR__ . '/../../_files/require-jquery.js');
         $request            = $this->getRequest();
         $assetManager       = new AssetManager($resolver, $config);
@@ -310,7 +310,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager();
         $mimeResolver       = new MimeResolver;
         $response           = new Response;
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $resolver           = $this->getResolver(__DIR__ . '/../../_files/require-jquery.js');
         $request            = $this->getRequest();
         $assetManager       = new AssetManager($resolver, $config);
@@ -339,7 +339,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager($config['caching']);
         $mimeResolver       = new MimeResolver;
         $response           = new Response;
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $resolver           = $this->getResolver();
         $request            = $this->getRequest();
         $assetManager       = new AssetManager($resolver, $config);
@@ -369,7 +369,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager($config['caching']);
         $mimeResolver       = new MimeResolver;
         $response           = new Response;
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $resolver           = $this->getResolver();
         $request            = $this->getRequest();
         $assetManager       = new AssetManager($resolver, $config);
@@ -397,7 +397,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager($config['caching']);
         $mimeResolver       = new MimeResolver;
         $response           = new Response;
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $resolver           = $this->getResolver();
         $request            = $this->getRequest();
         $assetManager       = new AssetManager($resolver, $config);
@@ -427,7 +427,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager($config['caching']);
         $mimeResolver       = new MimeResolver;
         $response           = new Response;
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $resolver           = $this->getResolver();
         $request            = $this->getRequest();
         $assetManager       = new AssetManager($resolver, $config);
@@ -456,7 +456,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager($config['caching']);
         $mimeResolver       = new MimeResolver;
         $response           = new Response;
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $resolver           = $this->getResolver();
         $request            = $this->getRequest();
         $assetManager       = new AssetManager($resolver, $config);
@@ -485,7 +485,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager($config['caching']);
         $mimeResolver       = new MimeResolver;
         $response           = new Response;
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $resolver           = $this->getResolver();
         $request            = $this->getRequest();
         $assetManager       = new AssetManager($resolver, $config);
@@ -521,7 +521,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetFilterManager = new \AssetManager\Service\AssetFilterManager();
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager();
         $mimeResolver       = new MimeResolver;
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $assetManager       = new AssetManager($this->getResolver());
         $assetFilterManager->setMimeResolver($mimeResolver);
         $assetManager->setAssetFilterManager($assetFilterManager);
@@ -559,7 +559,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $mimeResolver       = new MimeResolver;
         $assetFilterManager = new \AssetManager\Service\AssetFilterManager();
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager();
-        $cacheController    = new \AssetManager\Service\CacheController();
+        $cacheController    = new \AssetManager\CacheControl\CacheController();
         $assetManager       = new AssetManager($this->getResolver());
         $assetFilterManager->setMimeResolver($mimeResolver);
         $assetManager->setCacheController($cacheController);

@@ -1,6 +1,6 @@
 <?php
 
-namespace AssetManager\Service;
+namespace AssetManager\CacheBusting;
 
 class AssetCacheBustingManager
 {

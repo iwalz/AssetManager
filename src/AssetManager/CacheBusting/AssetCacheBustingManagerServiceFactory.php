@@ -1,10 +1,9 @@
 <?php
 
-namespace AssetManager\Service;
+namespace AssetManager\CacheBusting;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use AssetManager\Service\AssetCacheBustingManager;
 
 class AssetCacheBustingManagerServiceFactory implements FactoryInterface
 {

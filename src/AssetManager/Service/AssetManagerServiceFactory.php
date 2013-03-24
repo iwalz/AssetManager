@@ -37,7 +37,7 @@ class AssetManagerServiceFactory implements FactoryInterface
 
         $assetManager->setAssetCacheManager($serviceLocator->get('AssetManager\Service\AssetCacheManager'));
 
-        $assetManager->setCacheController($serviceLocator->get('AssetManager\Service\CacheController'));
+        $assetManager->setCacheController($serviceLocator->get('AssetManager\CacheControl\CacheController'));
 
         return $assetManager;
     }

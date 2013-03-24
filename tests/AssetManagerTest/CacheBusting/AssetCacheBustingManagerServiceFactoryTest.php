@@ -1,6 +1,6 @@
 <?php
 
-namespace AssetManagerTest\Service;
+namespace AssetManagerTest\CacheBusting;
 
 use PHPUnit_Framework_TestCase;
 use Zend\ServiceManager\ServiceManager;
@@ -21,9 +21,9 @@ class AssetCacheBustingManagerServiceFactoryTest extends PHPUnit_Framework_TestC
             )
         );
 
-        $tmp = new \AssetManager\Service\AssetCacheBustingManagerServiceFactory($serviceManager);
+        $tmp = new \AssetManager\CacheBusting\AssetCacheBustingManagerServiceFactory($serviceManager);
         $cacheBustingManager = $tmp->createService($serviceManager);
 
-        $this->assertTrue($cacheBustingManager instanceof \AssetManager\Service\AssetCacheBustingManager);
+        $this->assertTrue($cacheBustingManager instanceof \AssetManager\CacheBusting\AssetCacheBustingManager);
     }
 }

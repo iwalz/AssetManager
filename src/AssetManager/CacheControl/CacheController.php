@@ -1,6 +1,6 @@
 <?php
 
-namespace AssetManager\Service;
+namespace AssetManager\CacheControl;
 
 use Assetic\Asset\AssetInterface;
 use Zend\Http\Headers;
@@ -21,53 +21,55 @@ class CacheController
     protected $config = array();
 
     /**
-     * @var Request
+     * @var RequestInspector
      */
-    protected $request = null;
+    protected $requestInspector = null;
 
     /**
-     * @var Response
+     * @var ResponseModifier
      */
-    protected $response = null;
+    protected $responseModifier = null;
 
     public function __construct($config = array())
     {
         if (isset($config['cache_control'])) {
             $this->setConfig($config['cache_control']);
         }
+    }
 
-        /** @var $headers  \Zend\Http\Headers */
-        /*$headers        = $request->getHeaders();
-        $uri            = $request->getUri();
-        $pos            = strpos($uri->getPath(), ';AM');
-
+    /**
+     * Handles the response based on the request and the validation
+     *
+     * @param AssetInterface $asset
+     * @return null|Response
+     */
+    public function handleRequest(AssetInterface $asset)
+    {
         if (
-            $pos !== false
-            && $headers->has('If-None-Match')
+            $this->requestInspector->isCacheBustingRequest()
+            && $this->requestInspector->isIfNoneMatchRequest()
         ) {
-            $response->setStatusCode(304);
-            $responseHeaders = $response->getHeaders();
-            $responseHeaders->addHeaderLine('Cache-Control', '');
-            return $response;
+            $this->responseModifier->enableNotModified();
+
+            return $this->responseModifier->getResponse();
         }
 
-        if ($pos !== false) {
-            $uri->setPath(substr($uri->getPath(), 0, $pos));
+        if ($this->requestInspector->isCacheBustingRequest()) {
+            $this->requestInspector->stripCacheBustingTag();
         }
-        if ($headers->has('If-Modified-Since')) {
-            $asset = $assetManager->resolve($request);
+
+        if ($this->requestInspector->isIfModifiedSinceRequest()) {
             $lastModified = $asset->getLastModified();
-            $modifiedSince = strtotime($headers->get('If-Modified-Since')->getDate());
+            $modifiedSince = strtotime($this->requestInspector->getRequest()->getHeaders()->get('If-Modified-Since')->getDate());
 
             if ($lastModified <= $modifiedSince) {
-                $response->setStatusCode(304);
-                $responseHeaders = $response->getHeaders();
-                $responseHeaders->addHeaderLine('Cache-Control', '');
-                return $response;
+                $this->responseModifier->enableNotModified();
+
+                return $this->responseModifier->getResponse();
             }
         }
 
-        if ($headers->has('If-None-Match')) {
+        /*if ($headers->has('If-None-Match')) {
             $cacheController = $assetManager->getCacheController();
             $asset = $assetManager->resolve($request);
 
@@ -82,8 +84,7 @@ class CacheController
                 $responseHeaders->addHeaderLine('Cache-Control', '');
                 return $response;
             }
-        }
-        */
+        }*/
     }
 
     /**
@@ -167,8 +168,10 @@ class CacheController
         }
     }
 
-
-
+    /**
+     * @param AssetInterface $asset
+     * @return string
+     */
     public function calculateEtag(AssetInterface $asset)
     {
         $mtime = $asset->getLastModified();
@@ -189,23 +192,51 @@ class CacheController
         return $etag;
     }
 
-    public function setRequest(Request $request)
+    /**
+     * @param RequestInspector $requestInspector
+     */
+    public function setRequestInspector(RequestInspector $requestInspector)
     {
-        $this->request = $request;
+        $this->requestInspector = $requestInspector;
     }
 
-    public function getRequest()
+    /**
+     * @return RequestInspector|null
+     */
+    public function getRequestInspector()
     {
-        return $this->request;
+        return $this->requestInspector;
     }
 
+    /**
+     * @param Request $request
+     */
+    public function setRequest( Request $request)
+    {
+        $this->requestInspector->setRequest($request);
+    }
+
+    /**
+     * @param ResponseModifier $responseModifier
+     */
+    public function setResponseModifier(ResponseModifier $responseModifier)
+    {
+        $this->responseModifier = $responseModifier;
+    }
+
+    /**
+     * @return ResponseModifier|null
+     */
+    public function getResponseModifier()
+    {
+        return $this->responseModifier;
+    }
+
+    /**
+     * @param Response $response
+     */
     public function setResponse(Response $response)
     {
-        $this->response = $response;
-    }
-
-    public function getResponse()
-    {
-        return $this->response;
+        $this->responseModifier->setResponse($response);
     }
 }

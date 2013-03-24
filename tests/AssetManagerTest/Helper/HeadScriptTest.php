@@ -13,7 +13,7 @@ class HeadScriptTest extends PHPUnit_Framework_TestCase
         $view     = new View();
         $resolver = $this->getMock('AssetManager\Resolver\AggregateResolver', array('resolve'));
         $sl       = $this->getMock('Zend\ServiceManager\ServiceManager', array('getServiceLocator'));
-        $cacheController  = $this->getMock('AssetManager\Service\CacheController', array('calculateEtag'));
+        $cacheController  = $this->getMock('AssetManager\CacheControl\CacheController', array('calculateEtag'));
         $helper   = new \AssetManager\Helper\HeadScript($sl);
         $helper->setView($view);
 
@@ -24,7 +24,7 @@ class HeadScriptTest extends PHPUnit_Framework_TestCase
 
         $sm = new \Zend\ServiceManager\ServiceManager();
         $sm->setService('AssetManager\Service\AggregateResolver', $resolver);
-        $sm->setService('AssetManager\Service\CacheController', $cacheController);
+        $sm->setService('AssetManager\CacheControl\CacheController', $cacheController);
 
         $sl->expects($this->once())->method('getServiceLocator')->will($this->returnValue($sm));
 

@@ -1,8 +1,6 @@
 <?php
 
-namespace AssetManager\Service;
-
-use AssetManager\Service\CacheController;
+namespace AssetManager\CacheControl;
 
 interface CacheControllerAwareInterface
 {

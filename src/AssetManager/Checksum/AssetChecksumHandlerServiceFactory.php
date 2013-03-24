@@ -1,8 +1,7 @@
 <?php
 
-namespace AssetManager\Service;
+namespace AssetManager\Checksum;
 
-use AssetManager\Service\AssetChecksumHandler;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

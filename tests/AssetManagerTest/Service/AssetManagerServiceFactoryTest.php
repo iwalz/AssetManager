@@ -12,7 +12,7 @@ class AssetManagerServiceFactoryTest extends PHPUnit_Framework_TestCase
     {
         $assetFilterManager = new \AssetManager\Service\AssetFilterManager();
         $assetCacheManager = new \AssetManager\Service\AssetCacheManager();
-        $cacheController = new \AssetManager\Service\CacheController();
+        $cacheController = new \AssetManager\CacheControl\CacheController();
         $serviceManager = new ServiceManager();
         $serviceManager->setService(
             'AssetManager\Service\AggregateResolver',
@@ -37,7 +37,7 @@ class AssetManagerServiceFactoryTest extends PHPUnit_Framework_TestCase
         ));
 
         $serviceManager->setService(
-            'AssetManager\Service\CacheController',
+            'AssetManager\CacheControl\CacheController',
             $cacheController
         );
 

@@ -4,7 +4,8 @@ namespace AssetManager\Service;
 
 use Assetic\Asset\AssetInterface;
 use AssetManager\Service\AssetFilterManagerAwareInterface;
-use AssetManager\Service\CacheControllerAwareInterface;
+use AssetManager\CacheControl\CacheControllerAwareInterface;
+use AssetManager\CacheControl\CacheController;
 use AssetManager\Service\AssetFilterManager;
 use AssetManager\Exception;
 use AssetManager\Resolver\ResolverInterface;

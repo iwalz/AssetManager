@@ -1,6 +1,6 @@
 <?php
 
-namespace AssetManagerTest\Service;
+namespace AssetManagerTest\CacheBusting;
 
 use PHPUnit_Framework_TestCase;
 use Zend\ServiceManager\ServiceManager;
@@ -22,7 +22,7 @@ class AssetCacheBustingManagerTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        $tmp = new \AssetManager\Service\AssetCacheBustingManagerServiceFactory($serviceManager);
+        $tmp = new \AssetManager\CacheBusting\AssetCacheBustingManagerServiceFactory($serviceManager);
         $cacheBustingManager = $tmp->createService($serviceManager);
 
         $this->assertTrue($cacheBustingManager->isEnabled());
@@ -31,7 +31,7 @@ class AssetCacheBustingManagerTest extends PHPUnit_Framework_TestCase
 
     public function testDefaultSettings()
     {
-        $cacheBustingManager = new \AssetManager\Service\AssetCacheBustingManager();
+        $cacheBustingManager = new \AssetManager\CacheBusting\AssetCacheBustingManager();
 
         $this->assertFalse($cacheBustingManager->isEnabled());
         $this->assertFalse($cacheBustingManager->getOverrideHeadHelper());

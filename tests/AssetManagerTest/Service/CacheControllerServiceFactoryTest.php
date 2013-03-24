@@ -3,8 +3,8 @@
 namespace AssetManagerTest\Service;
 
 use PHPUnit_Framework_TestCase;
-use AssetManager\Service\CacheControllerServiceFactory;
-use AssetManager\Service\CacheController;
+use AssetManager\CacheControl\CacheControllerServiceFactory;
+use AssetManager\CacheControl\CacheController;
 use Assetic\Asset\StringAsset;
 use Zend\ServiceManager\ServiceManager;
 

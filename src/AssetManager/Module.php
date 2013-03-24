@@ -2,6 +2,7 @@
 
 namespace AssetManager;
 
+use Zend\Http\Response;
 use Zend\Loader\StandardAutoloader;
 use Zend\Loader\AutoloaderFactory;
 use Zend\EventManager\EventInterface;
@@ -52,6 +53,7 @@ class Module implements
     {
         $response = $event->getResponse();
         if (!method_exists($response, 'getStatusCode') || $response->getStatusCode() !== 404) {
+
             return;
         }
 
@@ -63,10 +65,15 @@ class Module implements
         $cacheController->setResponse($response);
 
         if (!$assetManager->resolvesToAsset($request)) {
+
             return;
         }
 
+        $cachedResponse = $cacheController->handleRequest($assetManager->resolve($request));
+        if ($cachedResponse instanceof Response) {
 
+            return $cachedResponse;
+        }
 
         $response->setStatusCode(200);
 
