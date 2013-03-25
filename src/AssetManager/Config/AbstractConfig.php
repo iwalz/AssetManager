@@ -154,7 +154,7 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      */
     public function count()
     {
-        return count($this->config);
+        return count($this->getConfig());
     }
 
     /**
