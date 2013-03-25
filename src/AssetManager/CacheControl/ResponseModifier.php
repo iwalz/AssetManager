@@ -2,6 +2,7 @@
 
 namespace AssetManager\CacheControl;
 
+use Assetic\Asset\AssetInterface;
 use Zend\Http\Response;
 
 /**
@@ -17,11 +18,26 @@ class ResponseModifier
     protected $response = null;
 
     /**
+     * @var Config
+     */
+    protected $config = null;
+
+    /**
      * @param Response $response
      */
     public function __construct( Response $response = null)
     {
         $this->response             = $response;
+    }
+
+    public function setConfig( Config $config)
+    {
+        $this->config = $config;
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -51,5 +67,23 @@ class ResponseModifier
             $cacheControlHeader     = $responseHeaders->get('Cache-Control');
             $responseHeaders->removeHeader($cacheControlHeader);
         }
+    }
+
+    public function addHeaders(AssetInterface $asset)
+    {
+        $headers = $this->response->getHeaders();
+
+        $lastModified = date("D,d M Y H:i:s T", $asset->getLastModified());
+
+        $lifetime = $this->config->getLifetime();
+        $headers->addHeaderLine('Cache-Control', 'max-age=' . $lifetime .', public');
+        $headers->addHeaderLine('Expires', date("D,d M Y H:i:s T", time() + $lifetime));
+
+        $headers->addHeaderLine('Last-Modified', $lastModified);
+        $headers->addHeaderLine('Pragma', '');
+
+        #if ($this->hasEtag()) {
+        #    $headers->addHeaderLine('ETag', $this->calculateEtag($asset));
+        #}
     }
 }

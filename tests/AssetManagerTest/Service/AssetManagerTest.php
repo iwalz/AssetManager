@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../_files/JSMin.inc';
 require_once __DIR__ . '/../../_files/CustomFilter.php';
 require_once __DIR__ . '/../../_files/BrokenFilter.php';
 
+use AssetManager\CacheControl\ResponseModifier;
 use PHPUnit_Framework_TestCase;
 use Assetic\Asset;
 use AssetManager\Cache\FilePathCache;
@@ -157,12 +158,15 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetFilterManager = new \AssetManager\Service\AssetFilterManager($config['filters']);
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager();
         $cacheController    = new \AssetManager\CacheControl\CacheController();
+        $responseModifier   = new ResponseModifier();
 
         $response     = new Response;
         $resolver     = $this->getResolver(__DIR__ . '/../../_files/require-jquery.js');
         $request      = $this->getRequest();
         $assetManager = new AssetManager($resolver, $config);
         $minified     = \JSMin::minify(file_get_contents(__DIR__ . '/../../_files/require-jquery.js'));
+        $responseModifier->setResponse($response);
+        $cacheController->setResponseModifier($responseModifier);
         $assetManager->setAssetFilterManager($assetFilterManager);
         $assetManager->setAssetCacheManager($assetCacheManager);
         $assetManager->setCacheController($cacheController);
@@ -218,13 +222,16 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetFilterManager = new \AssetManager\Service\AssetFilterManager($config['filters']);
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager();
         $cacheController    = new \AssetManager\CacheControl\CacheController();
+        $responseModifier   = new ResponseModifier();
         $mimeResolver       = new MimeResolver;
         $response           = new Response;
         $resolver           = $this->getResolver(__DIR__ . '/../../_files/require-jquery.js');
         $request            = $this->getRequest();
         $assetManager       = new AssetManager($resolver, $config);
         $minified           = \JSMin::minify(file_get_contents(__DIR__ . '/../../_files/require-jquery.js'));
+        $responseModifier->setResponse($response);
         $assetFilterManager->setMimeResolver($mimeResolver);
+        $cacheController->setResponseModifier($responseModifier);
         $assetManager->setCacheController($cacheController);
         $assetManager->setAssetFilterManager($assetFilterManager);
         $assetManager->setAssetCacheManager($assetCacheManager);

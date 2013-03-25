@@ -22,12 +22,11 @@ class CacheControllerServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $config         = $serviceLocator->get('Config');
-        $config         = isset($config['asset_manager']) ? $config['asset_manager'] : array();
-
+        $config = new Config($serviceLocator->get('Config'));
         $cacheController = new CacheController($config);
         $requestInspector = new RequestInspector();
         $responseModifier = new ResponseModifier();
+        $responseModifier->setConfig($config);
         $cacheController->setRequestInspector($requestInspector);
         $cacheController->setResponseModifier($responseModifier);
 
