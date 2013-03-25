@@ -28,10 +28,6 @@ class Config extends AbstractConfig
 
         preg_match("/(\d+)(\w)/", $lifetime, $match);
 
-        if (count($match) < 3) {
-            throw new InvalidArgumentException("Invalid format");
-        }
-
         if ($match[2] == 'd') {
 
             return $match[1]*$day;
