@@ -46,6 +46,8 @@ class CacheController
      */
     public function handleRequest(AssetInterface $asset)
     {
+        $this->config->setAsset($asset);
+
         if (
             $this->requestInspector->isCacheBustingRequest()
             && $this->requestInspector->isIfNoneMatchRequest()
@@ -164,6 +166,8 @@ class CacheController
     public function setRequest( Request $request)
     {
         $this->requestInspector->setRequest($request);
+
+        $this->config->setPath($request);
     }
 
     /**

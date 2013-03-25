@@ -23,6 +23,7 @@ class CacheControllerServiceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $config = new Config($serviceLocator->get('Config'));
+        $config->setMimeResolver($serviceLocator->get('mime_resolver'));
         $cacheController = new CacheController($config);
         $requestInspector = new RequestInspector();
         $responseModifier = new ResponseModifier();
