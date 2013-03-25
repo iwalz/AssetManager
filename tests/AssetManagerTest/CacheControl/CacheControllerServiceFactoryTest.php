@@ -2,6 +2,7 @@
 
 namespace AssetManagerTest\CacheControl;
 
+use AssetManager\Service\MimeResolver;
 use PHPUnit_Framework_TestCase;
 use AssetManager\CacheControl\CacheControllerServiceFactory;
 use AssetManager\CacheControl\CacheController;
@@ -29,12 +30,13 @@ class CacheControllerServiceFactoryTest extends PHPUnit_Framework_TestCase
     {
         $serviceManager = new ServiceManager();
         $serviceManager->setService('Config', $this->config);
+        $serviceManager->setService('mime_resolver', new MimeResolver());
 
         $factory = new CacheControllerServiceFactory();
         $cacheController = $factory->createService($serviceManager);
         $this->assertTrue($cacheController instanceof CacheController);
         $config = $cacheController->getConfig();
 
-        $this->assertTrue($cacheController instanceof CacheControllerConfig);
+        $this->assertTrue($config instanceof CacheControllerConfig);
     }
 }

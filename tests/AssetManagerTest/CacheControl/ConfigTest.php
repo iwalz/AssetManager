@@ -3,11 +3,14 @@
 namespace AssetManagerTest\CacheControl;
 
 use AssetManager\CacheControl\Config;
+use AssetManager\Service\MimeResolver;
+use Assetic\Asset\FileAsset;
 use PHPUnit_Framework_TestCase;
 
 class ConfigTest extends PHPUnit_Framework_TestCase
 {
     protected $config = null;
+    protected $cacheControlConfig = null;
 
     public function setUp()
     {
@@ -18,25 +21,33 @@ class ConfigTest extends PHPUnit_Framework_TestCase
                 )
             )
         );
+
+        $asset = new FileAsset(__FILE__);
+        $asset->mimetype = 'application/javascript';
+
+        $this->cacheControlConfig = new Config();
+        $this->cacheControlConfig->setAsset($asset);
+        $this->cacheControlConfig->setMimeResolver(new MimeResolver());
+        $this->cacheControlConfig->setPath('foo.jpg');
+        $this->cacheControlConfig->setConfig($this->config);
     }
 
     public function testGetLifetimme()
     {
-        $config = new Config();
-        $config->setConfig($this->config);
-        $this->assertSame(300, $config->getLifetime());
+        $this->cacheControlConfig->setConfig($this->config);
+        $this->assertSame(300, $this->cacheControlConfig->getLifetime());
 
         $this->config['asset_manager']['cache_control']['lifetime'] = '2h';
-        $config->setConfig($this->config);
-        $this->assertSame(7200, $config->getLifetime());
+        $this->cacheControlConfig->setConfig($this->config);
+        $this->assertSame(7200, $this->cacheControlConfig->getLifetime());
 
         $this->config['asset_manager']['cache_control']['lifetime'] = '3d';
-        $config->setConfig($this->config);
-        $this->assertSame(259200, $config->getLifetime());
+        $this->cacheControlConfig->setConfig($this->config);
+        $this->assertSame(259200, $this->cacheControlConfig->getLifetime());
 
         $this->config['asset_manager']['cache_control']['lifetime'] = '30';
-        $config->setConfig($this->config);
-        $this->assertEquals(30, $config->getLifetime());
+        $this->cacheControlConfig->setConfig($this->config);
+        $this->assertEquals(30, $this->cacheControlConfig->getLifetime());
     }
 
     /**
@@ -45,10 +56,9 @@ class ConfigTest extends PHPUnit_Framework_TestCase
      */
     public function testGetLifetimeWithInvalidFormatters()
     {
-        $config = new Config();
         $this->config['asset_manager']['cache_control']['lifetime'] = '30p';
-        $config->setConfig($this->config);
+        $this->cacheControlConfig->setConfig($this->config);
 
-        $config->getLifetime();
+        $this->cacheControlConfig->getLifetime();
     }
 }
