@@ -16,6 +16,9 @@ return array(
         'invokables' => array(
             'mime_resolver' => 'AssetManager\Service\MimeResolver',
         ),
+        'abstract_factories' => array(
+            'AssetManager\Config\AbstractConfigFactory'
+        ),
     ),
     'view_helpers' => array(
         'factories' => array(
