@@ -129,8 +129,7 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      */
     public function getConfig()
     {
-        if ($this->internalConfig !== null)
-        {
+        if ($this->internalConfig !== null) {
             return $this->internalConfig;
         }
 
