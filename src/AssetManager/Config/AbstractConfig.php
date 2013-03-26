@@ -18,6 +18,11 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
     protected $config = array();
 
     /**
+     * @var array
+     */
+    protected $internalConfig = null;
+
+    /**
      * @var AssetInterface
      */
     protected $asset = null;
@@ -57,7 +62,7 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      */
     public function __construct(array $config = array())
     {
-        $this->config               = $config;
+        $this->setConfig( $config );
         $this->allowGeneralConfig   = true;
         $this->allowAssetConfig     = true;
         $this->allowMimeConfig      = true;
@@ -69,7 +74,10 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      */
     public function enableGeneralConfig($bool)
     {
-        $this->allowGeneralConfig = $bool;
+        if ($bool !== $this->allowGeneralConfig) {
+            $this->allowGeneralConfig = $bool;
+            $this->reset();
+        }
     }
 
     /**
@@ -77,7 +85,10 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      */
     public function enableAssetConfig($bool)
     {
-        $this->allowAssetConfig = $bool;
+        if ($bool !== $this->allowAssetConfig) {
+            $this->allowAssetConfig = $bool;
+            $this->reset();
+        }
     }
 
     /**
@@ -85,7 +96,10 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      */
     public function enableMimeConfig($bool)
     {
-        $this->allowMimeConfig = $bool;
+        if ($bool !== $this->allowMimeConfig) {
+            $this->allowMimeConfig = $bool;
+            $this->reset();
+        }
     }
 
     /**
@@ -93,7 +107,10 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      */
     public function enableExtensionConfig($bool)
     {
-        $this->allowExtensionConfig = $bool;
+        if ($bool !== $this->allowExtensionConfig) {
+            $this->allowExtensionConfig = $bool;
+            $this->reset();
+        }
     }
 
     /**
@@ -101,7 +118,10 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      */
     public function setConfig(array $config)
     {
-        $this->config = $config;
+        if ($config !== $this->config) {
+            $this->config = $config;
+            $this->reset();
+        }
     }
 
     /**
@@ -109,6 +129,11 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      */
     public function getConfig()
     {
+        if ($this->internalConfig !== null)
+        {
+            return $this->internalConfig;
+        }
+
         $globalConfig = $this->config['asset_manager'];
         $config = array();
 
@@ -159,6 +184,7 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
         }
 
         $this->checkRequiredKeys($config);
+        $this->internalConfig = $config;
 
         return $config;
     }
@@ -180,11 +206,22 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
     }
 
     /**
+     * Reset the config merge
+     */
+    public function reset()
+    {
+        $this->internalConfig = null;
+    }
+
+    /**
      * @param AssetInterface $asset
      */
     public function setAsset(AssetInterface $asset)
     {
-        $this->asset = $asset;
+        if ($asset !== $this->asset) {
+            $this->asset = $asset;
+            $this->reset();
+        }
     }
 
     /**
@@ -217,6 +254,7 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      */
     public function setPath($path)
     {
+        $this->reset();
         if (is_string($path)) {
             $this->path = $path;
 
