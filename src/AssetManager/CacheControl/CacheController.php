@@ -61,6 +61,7 @@ class CacheController
             $this->requestInspector->stripCacheBustingTag();
         }
 
+
         if ($this->requestInspector->isIfModifiedSinceRequest()) {
             $lastModified = $asset->getLastModified();
             $modifiedSince = $this->requestInspector->getModifiedSince();
@@ -118,30 +119,6 @@ class CacheController
     public function getConfig()
     {
         return $this->config;
-    }
-
-    /**
-     * @param AssetInterface $asset
-     * @return string
-     */
-    public function calculateEtag(AssetInterface $asset)
-    {
-        $mtime = $asset->getLastModified();
-        $size = null;
-
-        $assetContents = $asset->dump();
-
-        // @codeCoverageIgnoreStart
-        if (function_exists('mb_strlen')) {
-            $size = mb_strlen($assetContents, '8bit');
-        } else {
-            $size = strlen($assetContents);
-        }
-        // @codeCoverageIgnoreEnd
-
-        $etag = sprintf('%x-%x-%016x', 1, $size, $mtime);
-
-        return $etag;
     }
 
     /**

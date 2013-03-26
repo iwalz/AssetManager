@@ -22,6 +22,7 @@ class RequestInspectorTest extends PHPUnit_Framework_TestCase
 
         $uri->setPath('http://www.foo.com/bar.jpg');
         $this->assertFalse($requestInspector->isCacheBustingRequest());
+        $this->assertSame($request, $requestInspector->getRequest());
     }
 
     public function testIsIfNoneMatchRequest()

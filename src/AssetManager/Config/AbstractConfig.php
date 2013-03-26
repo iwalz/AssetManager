@@ -16,30 +16,37 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      * @var array
      */
     protected $config = array();
+
     /**
      * @var AssetInterface
      */
     protected $asset = null;
+
     /**
      * @var MimeResolver
      */
     protected $mimeResolver = null;
+
     /**
      * @var bool
      */
     protected $allowGeneralConfig = null;
+
     /**
      * @var bool
      */
     protected $allowAssetConfig = null;
+
     /**
      * @var bool
      */
     protected $allowMimeConfig = null;
+
     /**
      * @var null
      */
     protected $allowExtensionConfig = null;
+
     /**
      * @var string
      */

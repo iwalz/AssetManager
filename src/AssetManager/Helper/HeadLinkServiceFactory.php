@@ -27,8 +27,7 @@ class HeadLinkServiceFactory implements FactoryInterface
         $config         = isset($config['asset_manager']) ? $config['asset_manager'] : array();
 
         if (
-            isset($config['cache_busting']['override_head_helper'])
-            && $config['cache_busting']['override_head_helper']
+            isset($config['cache_busting']['enable'])
         ) {
 
             return new HeadLink($serviceLocator);

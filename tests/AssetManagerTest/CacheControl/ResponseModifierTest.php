@@ -2,12 +2,27 @@
 
 namespace AssetManagerTest\CacheControl;
 
+use AssetManager\CacheControl\Config;
 use AssetManager\CacheControl\ResponseModifier;
 use PHPUnit_Framework_TestCase;
 use Zend\Http\Headers;
+use Zend\Http\Response;
 
 class ResponseModifierTest extends PHPUnit_Framework_TestCase
 {
+    public function testGettersAndSetters()
+    {
+        $responseModifier = new ResponseModifier();
+        $config = new Config();
+        $response = new Response();
+
+        $responseModifier->setResponse($response);
+        $responseModifier->setConfig($config);
+
+        $this->assertSame($config, $responseModifier->getConfig());
+        $this->assertSame($response, $responseModifier->getResponse());
+    }
+
     public function testEnableNotModified()
     {
         $responseModifier = new ResponseModifier();

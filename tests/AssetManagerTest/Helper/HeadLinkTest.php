@@ -2,37 +2,31 @@
 
 namespace AssetManagerTest;
 
+use AssetManager\Helper\HeadLinkServiceFactory;
 use PHPUnit_Framework_TestCase;
+use Zend\ServiceManager\ServiceManager;
+use Zend\View\HelperPluginManager;
 use Zend\View\Renderer\PhpRenderer as View;
-use Assetic\Asset\StringAsset;
 
 class HeadLinkTest extends PHPUnit_Framework_TestCase
 {
-    public function testRewriteHeadlinkContentWithCacheBusting()
+    public function testHeadLinkInSm()
     {
-        $view     = new View();
-        $resolver = $this->getMock('AssetManager\Resolver\AggregateResolver', array('resolve'));
-        $sl       = $this->getMock('Zend\ServiceManager\ServiceManager', array('getServiceLocator'));
-        $cacheController  = $this->getMock('AssetManager\CacheControl\CacheController', array('calculateEtag'));
-        $helper   = new \AssetManager\Helper\HeadLink($sl);
-        $helper->setView($view);
+        $pm = new HelperPluginManager();
+        $pm->setFactory('headlink', new HeadLinkServiceFactory());
 
-        $resolver->expects($this->once())->method('resolve')->will($this->returnValue(new StringAsset('foo')));
-        $cacheController->expects($this->once())->method('calculateEtag')->will($this->returnValue('a-b-c'));
-
-        $helper->appendStylesheet('/css/bootstrap-white.css');
-
-        $sm = new \Zend\ServiceManager\ServiceManager();
-        $sm->setService('AssetManager\Service\AggregateResolver', $resolver);
-        $sm->setService('AssetManager\CacheControl\CacheController', $cacheController);
-
-        $sl->expects($this->once())->method('getServiceLocator')->will($this->returnValue($sm));
-
-        $foo = $helper->toString();
-        $this->assertSame(
-            '<link href="/css/bootstrap-white.css;AMa-b-c" media="screen" rel="stylesheet" type="text/css">',
-            $foo
+        $sm = new ServiceManager();
+        $sm->setService('Config', array(
+                'asset_manager' => array(
+                    'cache_busting' => array(
+                        'enable' => true
+                    )
+                )
+            )
         );
-        $this->assertSame($sl, $helper->getServiceLocator());
+        $pm->setServiceLocator($sm);
+
+        $headLink = $pm->get('headlink');
+        $this->assertInstanceOf('AssetManager\Helper\HeadLink', $headLink);
     }
 }

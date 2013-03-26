@@ -2,11 +2,14 @@
 
 namespace AssetManagerTest;
 
+use AssetManager\CacheControl\Config;
+use AssetManager\CacheControl\RequestInspector;
+use AssetManager\CacheControl\ResponseModifier;
 use Assetic\Asset\StringAsset;
 use PHPUnit_Framework_TestCase;
 use AssetManager\Module;
 use Zend\Http\Response;
-use Zend\Http\Request;
+use Zend\Http\PhpEnvironment\Request;
 use Zend\EventManager\Event;
 use Zend\EventManager\EventManager;
 use Zend\Mvc\MvcEvent;
@@ -49,7 +52,6 @@ class ModuleTest extends PHPUnit_Framework_TestCase
 
     public function testOnDispatchDoesntResolveToAsset()
     {
-        $this->markTestIncomplete('Needs to be fixed');
         $resolver     = $this->getMock('AssetManager\Resolver\ResolverInterface');
         $assetManager = $this->getMock('AssetManager\Service\AssetManager', array('resolvesToAsset', 'getCacheController'), array($resolver));
         $assetManager
@@ -93,7 +95,6 @@ class ModuleTest extends PHPUnit_Framework_TestCase
 
     public function testOnDispatchStatus200()
     {
-        $this->markTestIncomplete('Needs to be fixed');
         $resolver     = $this->getMock('AssetManager\Resolver\ResolverInterface');
         $assetManager = $this->getMock('AssetManager\Service\AssetManager', array('resolvesToAsset', 'setAssetOnResponse', 'getCacheController', 'resolve'), array($resolver));
         $assetManager
@@ -147,9 +148,32 @@ class ModuleTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(200, $return->getStatusCode());
     }
 
+    protected function getCacheController()
+    {
+        $cacheController = $this->getMock('AssetManager\CacheControl\CacheController', array('handleRequest'));
+        $responseModifier = new ResponseModifier();
+        $requestInspector = new RequestInspector();
+        $config = new Config(
+            array(
+                'asset_manager' => array(
+                    'cache_control' => array(
+                        'lifetime' => '5m'
+                    )
+                )
+            )
+        );
+        $cacheController->setResponseModifier($responseModifier);
+        $cacheController->setRequestInspector($requestInspector);
+        $cacheController->setConfig($config);
+        $response = new Response();
+        $response->setStatusCode(304);
+        $cacheController->expects($this->any())->method('handleRequest')->will($this->returnValue($response));
+
+        return $cacheController;
+    }
+
     public function testOnDispatchModifiedSinceRequestWith304()
     {
-        $this->markTestIncomplete('Needs to be fixed');
         $event      = new MvcEvent();
         $request    = new Request();
         $module     = new Module();
@@ -165,7 +189,9 @@ class ModuleTest extends PHPUnit_Framework_TestCase
             ->method('resolvesToAsset')
             ->will($this->returnValue(true));
 
-        $cacheController = $this->getMock('AssetManager\CacheControl\CacheController');
+        $cacheController = $this->getCacheController();
+        $cacheController->setRequest($request);
+        $cacheController->setResponse($response);
         $assetManager
             ->expects($this->once())
             ->method('getCacheController')

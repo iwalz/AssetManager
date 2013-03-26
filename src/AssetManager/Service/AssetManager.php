@@ -4,7 +4,6 @@ namespace AssetManager\Service;
 
 use Assetic\Asset\AssetInterface;
 use AssetManager\Service\AssetFilterManagerAwareInterface;
-use AssetManager\CacheControl\CacheControllerAwareInterface;
 use AssetManager\CacheControl\CacheController;
 use AssetManager\Service\AssetFilterManager;
 use AssetManager\Exception;
@@ -19,8 +18,7 @@ use Zend\Http\PhpEnvironment\Request;
  */
 class AssetManager implements
     AssetFilterManagerAwareInterface,
-    AssetCacheManagerAwareInterface,
-    CacheControllerAwareInterface
+    AssetCacheManagerAwareInterface
 {
     /**
      * @var ResolverInterface

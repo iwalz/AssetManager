@@ -27,17 +27,6 @@ class HeadLink extends StandardHeadLink
     public function toString($indent = null)
     {
         $value = parent::toString($indent);
-        /** @var $aggregateResolver \AssetManager\Resolver\AggregateResolver */
-        $mainLocator = $this->sl->getServiceLocator();
-        $aggregateResolver = $mainLocator->get('AssetManager\Service\AggregateResolver');
-        $cacheController = $mainLocator->get('AssetManager\CacheControl\CacheController');
-
-        $container = $this->getContainer();
-        foreach ($container as $element) {
-            $asset = $aggregateResolver->resolve($element->href);
-            $etag = $cacheController->calculateEtag($asset);
-            $value = str_replace($element->href, $element->href.';AM'.$etag, $value);
-        }
 
         return $value;
     }
