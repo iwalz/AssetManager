@@ -260,12 +260,12 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      *
      * @return string
      */
-    public abstract function getConfigKey();
+    abstract public function getConfigKey();
 
     /**
      * The required keys
      *
      * @return string
      */
-    public abstract function getRequiredKeys();
+    abstract public function getRequiredKeys();
 }
