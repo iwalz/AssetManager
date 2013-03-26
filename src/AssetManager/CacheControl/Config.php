@@ -45,4 +45,9 @@ class Config extends AbstractConfig
 
         throw new InvalidArgumentException("Valid formatters are d,h,m");
     }
+
+    public function getRequiredKeys()
+    {
+        return array('lifetime');
+    }
 }

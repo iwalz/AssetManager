@@ -151,6 +151,8 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
             }
         }
 
+        $this->checkRequiredKeys($config);
+
         return $config;
     }
 
@@ -227,6 +229,18 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
     }
 
     /**
+     * Check if all required keys are present
+     */
+    private function checkRequiredKeys(array $config)
+    {
+        foreach(static::getRequiredKeys() as $requiredKey) {
+            if (!array_key_exists($requiredKey, $config)) {
+                throw new InvalidArgumentException("Config key '$requiredKey' is missing in the config");
+            }
+        }
+    }
+
+    /**
      * @return null|string
      */
     public function getPath()
@@ -240,4 +254,11 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      * @return string
      */
     public abstract function getConfigKey();
+
+    /**
+     * The required keys
+     *
+     * @return string
+     */
+    public abstract function getRequiredKeys();
 }

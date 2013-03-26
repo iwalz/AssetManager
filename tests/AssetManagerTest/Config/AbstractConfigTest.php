@@ -17,6 +17,7 @@ class AbstractConfigTest extends PHPUnit_Framework_TestCase
     {
         $this->mockConfig = $this->getMockForAbstractClass('AssetManager\Config\AbstractConfig');
         $this->mockConfig->expects($this->any())->method('getConfigKey')->will($this->returnValue('cache_control'));
+        $this->mockConfig->expects($this->any())->method('getRequiredKeys')->will($this->returnValue(array()));
 
         $asset = new FileAsset(__FILE__);
         $asset->mimetype = 'application/json';
@@ -207,6 +208,7 @@ class AbstractConfigTest extends PHPUnit_Framework_TestCase
     {
         $mockConfig = $this->getMockForAbstractClass('AssetManager\Config\AbstractConfig');
         $mockConfig->expects($this->any())->method('getConfigKey')->will($this->returnValue('cache_control'));
+        $mockConfig->expects($this->any())->method('getRequiredKeys')->will($this->returnValue(array()));
         $mockConfig->enableMimeConfig(true);
         $mockConfig->enableExtensionConfig(false);
         $mockConfig->enableAssetConfig(false);
@@ -230,6 +232,7 @@ class AbstractConfigTest extends PHPUnit_Framework_TestCase
     {
         $mockConfig = $this->getMockForAbstractClass('AssetManager\Config\AbstractConfig');
         $mockConfig->expects($this->any())->method('getConfigKey')->will($this->returnValue('cache_control'));
+        $mockConfig->expects($this->any())->method('getRequiredKeys')->will($this->returnValue(array()));
         $mockConfig->enableMimeConfig(true);
         $mockConfig->enableExtensionConfig(false);
         $mockConfig->enableAssetConfig(false);
@@ -252,6 +255,7 @@ class AbstractConfigTest extends PHPUnit_Framework_TestCase
     {
         $mockConfig = $this->getMockForAbstractClass('AssetManager\Config\AbstractConfig');
         $mockConfig->expects($this->any())->method('getConfigKey')->will($this->returnValue('cache_control'));
+        $mockConfig->expects($this->any())->method('getRequiredKeys')->will($this->returnValue(array()));
         $mockConfig->enableMimeConfig(false);
         $mockConfig->enableExtensionConfig(true);
         $mockConfig->enableAssetConfig(false);
@@ -274,6 +278,7 @@ class AbstractConfigTest extends PHPUnit_Framework_TestCase
     {
         $mockConfig = $this->getMockForAbstractClass('AssetManager\Config\AbstractConfig');
         $mockConfig->expects($this->any())->method('getConfigKey')->will($this->returnValue('cache_control'));
+        $mockConfig->expects($this->any())->method('getRequiredKeys')->will($this->returnValue(array()));
         $mockConfig->enableMimeConfig(false);
         $mockConfig->enableExtensionConfig(true);
         $mockConfig->enableAssetConfig(false);
@@ -297,6 +302,7 @@ class AbstractConfigTest extends PHPUnit_Framework_TestCase
     {
         $mockConfig = $this->getMockForAbstractClass('AssetManager\Config\AbstractConfig');
         $mockConfig->expects($this->any())->method('getConfigKey')->will($this->returnValue('cache_control'));
+        $mockConfig->expects($this->any())->method('getRequiredKeys')->will($this->returnValue(array()));
         $mockConfig->enableMimeConfig(false);
         $mockConfig->enableExtensionConfig(false);
         $mockConfig->enableAssetConfig(true);
@@ -313,5 +319,36 @@ class AbstractConfigTest extends PHPUnit_Framework_TestCase
     public function testSetPathWithInvalidArgument()
     {
         $this->mockConfig->setPath(new self());
+    }
+
+    /**
+     * @expectedException AssetManager\Exception\InvalidArgumentException
+     * @expectedExceptionMessage Config key 'lifetime' is missing in the config
+     */
+    public function testConfigWithMissingKey()
+    {
+        $mockConfig = $this->getMockForAbstractClass('AssetManager\Config\AbstractConfig');
+        $mockConfig->expects($this->any())->method('getConfigKey')->will($this->returnValue('cache_control'));
+        $mockConfig->expects($this->any())->method('getRequiredKeys')->will($this->returnValue(array('lifetime')));
+
+        $asset = new FileAsset(__FILE__);
+        $asset->mimetype = 'application/json';
+
+        $mimeResolver = new MimeResolver();
+
+        $mockConfig->setAsset($asset);
+        $mockConfig->setMimeResolver($mimeResolver);
+        $mockConfig->setPath('img/foo.jpg');
+
+        $config = array(
+            'asset_manager' => array(
+                'cache_control' => array(
+                    'foo' => 'bar'
+                )
+            )
+        );
+
+        $mockConfig->setConfig($config);
+        $mockConfig->getConfig();
     }
 }
