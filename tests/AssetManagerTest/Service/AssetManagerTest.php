@@ -51,6 +51,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $asset->mimetype    = 'application/javascript';
         $config->setAsset($asset);
         $config->setMimeResolver($mimeResolver);
+        $config->setPath('foo.jpg');
         $responseModifier->setConfig($config);
         $responseModifier->setResponse($response);
         $cacheController->setConfig($config);

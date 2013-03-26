@@ -103,42 +103,55 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
     public function getConfig()
     {
         $globalConfig = $this->config['asset_manager'];
+        $config = array();
 
-        if ($this->allowAssetConfig) {
-
-            if (!empty($globalConfig[$this->getPath()][static::getConfigKey()])) {
-
-                return $globalConfig[$this->getPath()][static::getConfigKey()];
-            }
+        if (
+            $this->allowGeneralConfig
+            && !empty($globalConfig[static::getConfigKey()])
+        ) {
+            $config = array_merge($config, $globalConfig[static::getConfigKey()]);
         }
 
-        if ($this->allowMimeConfig) {
-
-            if (!empty($globalConfig[$this->asset->mimetype][static::getConfigKey()])) {
-
-                return $globalConfig[$this->asset->mimetype][static::getConfigKey()];
+        if ( $this->allowExtensionConfig ) {
+            if (
+                $this->getMimeResolver() === null
+                || $this->getAsset() === null
+            ) {
+                throw new InvalidArgumentException('Asset and MimeResolver need to be set for the ExtensionConfig');
             }
-        }
-
-        if ( $this->allowExtensionConfig) {
 
             $extension = $this->getMimeResolver()->getExtension($this->asset->mimetype);
-
             if (!empty($globalConfig[$extension][static::getConfigKey()])) {
-
-                return $globalConfig[$extension][static::getConfigKey()];
+                $config = array_merge($config, $globalConfig[$extension][static::getConfigKey()]);
             }
         }
 
-        if ( $this->allowGeneralConfig ) {
+        if ( $this->allowMimeConfig ) {
+            if (
+                $this->getMimeResolver() === null
+                || $this->getAsset() === null
+            ) {
+                throw new InvalidArgumentException('Asset and MimeResolver need to be set for the MimeConfig');
+            }
 
-            if (!empty($globalConfig[static::getConfigKey()])) {
-
-                return $globalConfig[static::getConfigKey()];
+            if (!empty($globalConfig[$this->asset->mimetype][static::getConfigKey()])) {
+                $config = array_merge($config, $globalConfig[$this->asset->mimetype][static::getConfigKey()]);
             }
         }
 
-        return;
+        if ( $this->allowAssetConfig ) {
+            if (
+                $this->getPath() === null || $this->getPath() == ''
+            ) {
+                throw new InvalidArgumentException('Path/Request need to be set for the AssetConfig');
+            }
+
+            if (!empty($globalConfig[$this->getPath()][static::getConfigKey()])) {
+                $config = array_merge($config, $globalConfig[$this->getPath()][static::getConfigKey()]);
+            }
+        }
+
+        return $config;
     }
 
     /**
@@ -146,7 +159,7 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->config);
+        return new ArrayIterator($this->getConfig());
     }
 
     /**
