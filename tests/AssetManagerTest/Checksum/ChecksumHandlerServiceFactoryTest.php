@@ -2,7 +2,8 @@
 
 namespace AssetManagerTest\Checksum;
 
-use AssetManager\Checksum\AssetChecksumHandler;
+use AssetManager\Checksum\ChecksumHandler;
+use AssetManager\Checksum\ChecksumHandlerServiceFactory;
 use PHPUnit_Framework_TestCase;
 use Zend\ServiceManager\ServiceManager;
 
@@ -12,9 +13,9 @@ class AssetChecksumHandlerServiceFactoryTest extends PHPUnit_Framework_TestCase
     {
         $serviceManager = new ServiceManager();
 
-        $factory = new \AssetManager\Checksum\AssetChecksumHandlerServiceFactory();
+        $factory = new ChecksumHandlerServiceFactory();
         $checksumHandler = $factory->createService($serviceManager);
 
-        $this->assertTrue($checksumHandler instanceof AssetChecksumHandler);
+        $this->assertTrue($checksumHandler instanceof ChecksumHandler);
     }
 }

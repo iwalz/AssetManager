@@ -5,14 +5,14 @@ namespace AssetManager\Checksum;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class AssetChecksumHandlerServiceFactory implements FactoryInterface
+class ChecksumHandlerServiceFactory implements FactoryInterface
 {
 
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $assetChecksumHandler = new AssetChecksumHandler();
+        $checksumHandler = new ChecksumHandler();
 
-        return $assetChecksumHandler;
+        return $checksumHandler;
     }
 
 }
