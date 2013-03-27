@@ -187,7 +187,13 @@ class AssetManager implements
      */
     public function resolve(RequestInterface $request)
     {
+        if ($this->asset !== null) {
+
+            return $this->asset;
+        }
+
         if (!$request instanceof Request) {
+
             return false;
         }
 

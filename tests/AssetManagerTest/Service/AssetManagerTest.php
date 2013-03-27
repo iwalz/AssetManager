@@ -676,6 +676,18 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($resolvesToAsset);
     }
 
+    public function testResolveOnlyExecutedOnce()
+    {
+        $asset = new Asset\FileAsset(__FILE__);
+        $resolver     = $this->getMock('AssetManager\Resolver\ResolverInterface');
+        $resolver->expects($this->once())->method('resolve')->will($this->returnValue($asset));
+        $assetManager = new AssetManager($resolver);
+
+        $request = new Request;
+        $this->assertTrue($assetManager->resolvesToAsset($request));
+        $assetManager->resolve($request);
+    }
+
     protected function resolve(RequestInterface $request)
     {
         if (!$request instanceof Request) {
