@@ -9,6 +9,7 @@ require_once __DIR__ . '/../../_files/BrokenFilter.php';
 use AssetManager\CacheControl\CacheController;
 use AssetManager\CacheControl\RequestInspector;
 use AssetManager\CacheControl\ResponseModifier;
+use AssetManager\Checksum\ChecksumHandler;
 use PHPUnit_Framework_TestCase;
 use Assetic\Asset;
 use AssetManager\Cache\FilePathCache;
@@ -44,6 +45,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
             )
         );
         $cacheController    = new CacheController();
+        $checksumHandler    = new ChecksumHandler();
         $responseModifier   = new ResponseModifier();
         $requestInspector   = new RequestInspector($this->getRequest());
         $mimeResolver       = new MimeResolver();
@@ -55,6 +57,8 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $responseModifier->setConfig($config);
         $responseModifier->setResponse($response);
         $cacheController->setConfig($config);
+        $responseModifier->setChecksumHandler($checksumHandler);
+        $requestInspector->setChecksumHandler($checksumHandler);
         $cacheController->setResponseModifier($responseModifier);
         $cacheController->setRequestInspector($requestInspector);
 
@@ -190,8 +194,6 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
         $assetFilterManager = new \AssetManager\Service\AssetFilterManager($config['filters']);
         $assetCacheManager  = new \AssetManager\Service\AssetCacheManager();
-
-
 
         $response     = new Response;
         $resolver     = $this->getResolver(__DIR__ . '/../../_files/require-jquery.js');

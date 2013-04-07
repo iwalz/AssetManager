@@ -61,19 +61,23 @@ class Module implements
         $serviceManager     = $event->getApplication()->getServiceManager();
         $assetManager       = $serviceManager->get(__NAMESPACE__ . '\Service\AssetManager');
         $cacheController    = $assetManager->getCacheController();
-        $cacheController->setRequest($request);
-        $cacheController->setResponse($response);
+
 
         if (!$assetManager->resolvesToAsset($request)) {
 
             return;
         }
 
-        $asset = $assetManager->resolve($request);
-        $cachedResponse = $cacheController->handleRequest($asset);
-        if ($cachedResponse instanceof Response) {
+        if (!is_null($cacheController)) {
+            $cacheController->setRequest($request);
+            $cacheController->setResponse($response);
 
-            return $cachedResponse;
+            $asset = $assetManager->resolve($request);
+            $cachedResponse = $cacheController->handleRequest($asset);
+            if ($cachedResponse instanceof Response) {
+
+                return $cachedResponse;
+            }
         }
 
         $response->setStatusCode(200);

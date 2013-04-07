@@ -127,7 +127,7 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
     /**
      * @return array
      */
-    public function getConfig()
+    public function getConfig($validation = true)
     {
         if ($this->internalConfig !== null) {
             return $this->internalConfig;
@@ -182,7 +182,9 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
             }
         }
 
-        $this->checkRequiredKeys($config);
+        if ($validation) {
+            $this->checkRequiredKeys($config);
+        }
         $this->internalConfig = $config;
 
         return $config;

@@ -18,6 +18,10 @@ class DispatchTest extends AbstractControllerTestCase
 
     public function testStatusCode304OnIfModifiedSinceRequest()
     {
+        $config = $this->getApplicationServiceLocator()->get('Config');
+        $config['asset_manager']['cache_control']['enabled'] = true;
+        $this->getApplicationServiceLocator()->setAllowOverride(true);
+        $this->getApplicationServiceLocator()->setService('Config', $config);
         $request = $this->getApplication()->getRequest();
         $request->getHeaders()->addHeaderLine('If-Modified-Since', date("D,d M Y H:i:s T", time()));
         $this->dispatch('/foo.js');
@@ -28,6 +32,10 @@ class DispatchTest extends AbstractControllerTestCase
 
     public function testStatusCode200OnIfModifiedSinceRequest()
     {
+        $config = $this->getApplicationServiceLocator()->get('Config');
+        $config['asset_manager']['cache_control']['enabled'] = true;
+        $this->getApplicationServiceLocator()->setAllowOverride(true);
+        $this->getApplicationServiceLocator()->setService('Config', $config);
         $request = $this->getApplication()->getRequest();
         $request->getHeaders()->addHeaderLine('If-Modified-Since', 'Sat, 19 Dec 2000 16:25:03 GMT');
         $this->dispatch('/foo.js');

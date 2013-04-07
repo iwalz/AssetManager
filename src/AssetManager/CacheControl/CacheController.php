@@ -2,6 +2,7 @@
 
 namespace AssetManager\CacheControl;
 
+use AssetManager\Checksum\ChecksumHandler;
 use Assetic\Asset\AssetInterface;
 use Zend\Http\Headers;
 use Zend\Http\Request;
@@ -31,6 +32,11 @@ class CacheController
     protected $responseModifier = null;
 
     /**
+     * @var ChecksumHandler
+     */
+    protected $checksumHandler = null;
+
+    /**
      * @param Config $config
      */
     public function __construct(Config $config = null)
@@ -44,7 +50,7 @@ class CacheController
      * @param AssetInterface $asset
      * @return null|Response
      */
-    public function handleRequest(AssetInterface $asset)
+    public function handleRequest(AssetInterface $asset, $strategy = 'etag')
     {
         $this->config->setAsset($asset);
 
@@ -61,7 +67,7 @@ class CacheController
             $this->requestInspector->stripCacheBustingTag();
         }
 
-
+        // Handle Modified-Since requests
         if ($this->requestInspector->isIfModifiedSinceRequest()) {
             $lastModified = $asset->getLastModified();
             $modifiedSince = $this->requestInspector->getModifiedSince();
@@ -73,22 +79,20 @@ class CacheController
             }
         }
 
-        /*if ($headers->has('If-None-Match')) {
-            $cacheController = $assetManager->getCacheController();
-            $asset = $assetManager->resolve($request);
+        // Handle None-Match requests, only if Modified-Since is not available
+        if ($this->requestInspector->isIfNoneMatchRequest()) {
 
-            $assetManager->getAssetFilterManager()->setFilters($uri, $asset);
-            $etag = $cacheController->calculateEtag($asset);
+            $checksumHandler = $this->requestInspector->getChecksumHandler();
+            $checksumHandler->setAsset($asset);
+            $checksumHandler->setStrategy($strategy);
+            $checksumHandler->setPath($this->config->getPath());
 
-            $match = $headers->get('If-None-Match')->getFieldValue();
+            if ($this->requestInspector->getIfNoneMatch() == $checksumHandler->getChecksum()) {
+                $this->responseModifier->enableNotModified();
 
-            if ($etag == $match) {
-                $response->setStatusCode(304);
-                $responseHeaders = $response->getHeaders();
-                $responseHeaders->addHeaderLine('Cache-Control', '');
-                return $response;
+                return $this->responseModifier->getResponse();
             }
-        }*/
+        }
     }
 
     /**

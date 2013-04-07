@@ -4,6 +4,7 @@ namespace AssetManager\Service;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use AssetManager\CacheControl\Config as CacheControlConfig;
 
 /**
  * Factory class for AssetManagerService
@@ -37,7 +38,11 @@ class AssetManagerServiceFactory implements FactoryInterface
 
         $assetManager->setAssetCacheManager($serviceLocator->get('AssetManager\Service\AssetCacheManager'));
 
-        $assetManager->setCacheController($serviceLocator->get('AssetManager\CacheControl\CacheController'));
+        $cacheControlConfig = new CacheControlConfig($config);
+
+        if ($cacheControlConfig->isEnabled()) {
+            $assetManager->setCacheController($serviceLocator->get('AssetManager\CacheControl\CacheController'));
+        }
 
         return $assetManager;
     }

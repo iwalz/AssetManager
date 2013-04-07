@@ -20,7 +20,8 @@ class CacheControllerServiceFactoryTest extends PHPUnit_Framework_TestCase
             'asset_manager' => array(
                 'cache_control' => array(
                     'lifetime' => '5m',
-                    'etag' => true
+                    'etag' => true,
+                    'enabled' => true
                 )
             )
         );

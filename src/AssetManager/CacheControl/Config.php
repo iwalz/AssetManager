@@ -46,6 +46,25 @@ class Config extends AbstractConfig
         throw new InvalidArgumentException("Valid formatters are d,h,m");
     }
 
+    public function isEnabled()
+    {
+        $prevMimeSetting = $this->allowMimeConfig;
+        $prevAssetSetting = $this->allowAssetConfig;
+        $prevExtensionSetting = $this->allowExtensionConfig;
+
+        $this->enableAssetConfig(false);
+        $this->enableExtensionConfig(false);
+        $this->enableMimeConfig(false);
+
+        $config = $this->getConfig(false);
+
+        $this->enableAssetConfig($prevAssetSetting);
+        $this->enableExtensionConfig($prevExtensionSetting);
+        $this->enableMimeConfig($prevMimeSetting);
+
+        return (bool)$config['enabled'];
+    }
+
     public function getRequiredKeys()
     {
         return array('lifetime');

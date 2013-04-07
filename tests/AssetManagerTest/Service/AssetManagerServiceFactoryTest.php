@@ -31,6 +31,9 @@ class AssetManagerServiceFactoryTest extends PHPUnit_Framework_TestCase
 
         $serviceManager->setService('Config', array(
             'asset_manager' => array(
+                'cache_control' => array(
+                    'enabled' => false
+                ),
                 'Dummy data',
                 'Bacon',
             ),

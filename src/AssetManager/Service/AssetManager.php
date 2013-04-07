@@ -167,7 +167,10 @@ class AssetManager implements
         // @codeCoverageIgnoreEnd
 
         $headers = $response->getHeaders();
-        $this->cacheController->addHeaders($this->asset);
+
+        if (!is_null($this->cacheController)) {
+            $this->cacheController->addHeaders($this->asset);
+        }
 
         $headers->addHeaderLine('Content-Transfer-Encoding',   'binary')
                  ->addHeaderLine('Content-Type',                $mimeType)

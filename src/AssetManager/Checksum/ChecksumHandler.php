@@ -2,6 +2,13 @@
 
 namespace AssetManager\Checksum;
 
+use AssetManager\Checksum\Strategy\AbstractStrategyFactory;
+use AssetManager\Checksum\Strategy\StrategyInterface;
+use AssetManager\Exception\InvalidArgumentException;
+use AssetManager\Service\AssetFilterManager;
+use Zend\EventManager\Filter\FilterInterface;
+use Assetic\Asset\AssetInterface;
+
 /**
  * ChecksumHandler class
  *
@@ -11,29 +18,10 @@ namespace AssetManager\Checksum;
 class ChecksumHandler
 {
     /**
-     * No hash
+     * @var array
      */
-    const STRATEGY_NONE         = 0;
-    /**
-     * Hash based on a static value (e.g. a version number)
-     */
-    const STRATEGY_STATIC       = 1;
-    /**
-     * Random hash (for cache-versioning)
-     */
-    const STRATEGY_RANDOM       = 2;
-    /**
-     * Hash based on last modified timestamp
-     */
-    const STRATEGY_LASTMODIFIED = 3;
-    /**
-     * Hash based on the content checksum
-     */
-    const STRATEGY_CONTENT      = 4;
-    /**
-     * ETag checksum
-     */
-    const STRATEGY_ETAG         = 5;
+    protected $defaultStrategies = array();
+
     /**
      * Used strategy
      * @var int
@@ -41,11 +29,96 @@ class ChecksumHandler
     protected $strategy         = null;
 
     /**
-     * @param int $strategy
+     * @var AssetInterface
+     */
+    protected $asset            = null;
+
+    /**
+     * @var AssetFilterManager
+     */
+    protected $assetFilterManager = null;
+
+    /**
+     * @var string
+     */
+    protected $path             = null;
+
+    /**
+     * @param AssetFilterManager $assetFilterManager
+     */
+    public function setAssetFilterManager(AssetFilterManager $assetFilterManager)
+    {
+        $this->assetFilterManager = $assetFilterManager;
+    }
+
+    /**
+     * @param string
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * @return AssetFilterManager|null
+     */
+    public function getAssetFilterManager()
+    {
+        return $this->assetFilterManager;
+    }
+
+    /**
+     * Either
+     *  - none
+     *  - static
+     *  - random
+     *  - lastmodified
+     *  - content
+     *  - etag
+     *  - or the classname of a class that implements AssetManager\Checksum\Strategy\StrategyInterface
+     *
+     * @param string|null|StrategyInterface The strategy that is used.
+     */
+    public function __construct($strategy = null)
+    {
+        if ($strategy !== null) {
+            $this->setStrategy($strategy);
+        }
+    }
+
+    /**
+     * @param string|StrategyInterface $strategy
      */
     public function setStrategy($strategy)
     {
+        if (!is_string($strategy) && !$strategy instanceof StrategyInterface) {
+            throw new InvalidArgumentException('Only string or StrategyInterface implementation allowed');
+        }
+
         $this->strategy = $strategy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChecksum()
+    {
+        $strategy = AbstractStrategyFactory::factory($this->getStrategy());
+
+        if (!is_null($this->assetFilterManager)) {
+            $this->assetFilterManager->setFilters($this->path, $this->asset);
+        }
+        $strategy->setAsset($this->asset);
+
+        return $strategy->getChecksum();
     }
 
     /**
@@ -54,5 +127,21 @@ class ChecksumHandler
     public function getStrategy()
     {
         return $this->strategy;
+    }
+
+    /**
+     * @param AssetInterface $asset
+     */
+    public function setAsset(AssetInterface $asset)
+    {
+        $this->asset = $asset;
+    }
+
+    /**
+     * @return AssetInterface|null
+     */
+    public function getAsset()
+    {
+        return $this->asset;
     }
 }

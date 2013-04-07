@@ -33,5 +33,8 @@ return array(
             'AssetManager\Resolver\PrioritizedPathsResolver'    => 1000,
             'AssetManager\Resolver\PathStackResolver'           => 500,
         ),
+        'cache_control' => array(
+            'enabled' => false
+        )
     ),
 );

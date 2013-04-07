@@ -2,8 +2,10 @@
 
 namespace AssetManager\CacheControl;
 
+
 use Assetic\Asset\AssetInterface;
 use Zend\Http\Response;
+use AssetManager\Checksum\ChecksumHandler;
 
 /**
  * Modifies a response
@@ -23,29 +25,58 @@ class ResponseModifier
     protected $config = null;
 
     /**
+     * @var ChecksumHandler
+     */
+    protected $checksumHandler = null;
+
+    /**
      * @param Response $response
      */
-    public function __construct( Response $response = null)
+    public function __construct(Response $response = null)
     {
-        $this->response             = $response;
+        $this->response = $response;
     }
 
-    public function setConfig( Config $config)
+    /**
+     * @param Config $config
+     */
+    public function setConfig(Config $config)
     {
         $this->config = $config;
     }
 
+    /**
+     * @return Config|null
+     */
     public function getConfig()
     {
         return $this->config;
     }
 
     /**
+     * @param ChecksumHandler $checksumHandler
+     */
+    public function setChecksumHandler(ChecksumHandler $checksumHandler)
+    {
+        $this->checksumHandler = $checksumHandler;
+    }
+
+
+    /**
+     * @return ChecksumHandler|null
+     */
+    public function getChecksumHandler()
+    {
+        return $this->checksumHandler;
+    }
+
+
+    /**
      * @param Response $response
      */
-    public function setResponse( Response $response)
+    public function setResponse(Response $response)
     {
-        $this->response             = $response;
+        $this->response = $response;
     }
 
     /**
@@ -63,27 +94,29 @@ class ResponseModifier
     {
         $this->response->setStatusCode(304);
         $responseHeaders = $this->response->getHeaders();
-        if ( $responseHeaders->has('Cache-Control')) {
-            $cacheControlHeader     = $responseHeaders->get('Cache-Control');
+
+        if ($responseHeaders->has('Cache-Control')) {
+            $cacheControlHeader = $responseHeaders->get('Cache-Control');
             $responseHeaders->removeHeader($cacheControlHeader);
         }
     }
 
-    public function addHeaders(AssetInterface $asset)
+
+    public function addHeaders(AssetInterface $asset, $strategy = 'etag')
     {
         $headers = $this->response->getHeaders();
 
         $lastModified = date("D,d M Y H:i:s T", $asset->getLastModified());
-
         $lifetime = $this->config->getLifetime();
-        $headers->addHeaderLine('Cache-Control', 'max-age=' . $lifetime .', public');
-        $headers->addHeaderLine('Expires', date("D,d M Y H:i:s T", time() + $lifetime));
 
+        $headers->addHeaderLine('Cache-Control', 'max-age=' . $lifetime . ', public');
+        $headers->addHeaderLine('Expires', date("D,d M Y H:i:s T", time() + $lifetime));
         $headers->addHeaderLine('Last-Modified', $lastModified);
         $headers->addHeaderLine('Pragma', '');
 
-        #if ($this->hasEtag()) {
-        #    $headers->addHeaderLine('ETag', $this->calculateEtag($asset));
-        #}
+        $this->checksumHandler->setAsset($asset);
+        $this->checksumHandler->setStrategy($strategy);
+        $headers->addHeaderLine('ETag', $this->checksumHandler->getChecksum());
     }
+
 }
