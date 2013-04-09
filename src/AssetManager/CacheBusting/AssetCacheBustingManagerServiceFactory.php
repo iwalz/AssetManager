@@ -14,14 +14,10 @@ class AssetCacheBustingManagerServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $cacheBusting = array();
-        $config  = $serviceLocator->get('Config');
+        $globalConfig   = $serviceLocator->get('Config');
+        $config         = new Config($globalConfig);
 
-        if (!empty($config['asset_manager']['cache_busting'])) {
-            $cacheBusting = $config['asset_manager']['cache_busting'];
-        }
-
-        $assetCacheBustingManager = new AssetCacheBustingManager($cacheBusting);
+        $assetCacheBustingManager = new AssetCacheBustingManager($config);
 
         return $assetCacheBustingManager;
     }

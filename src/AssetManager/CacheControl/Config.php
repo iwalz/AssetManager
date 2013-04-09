@@ -48,19 +48,9 @@ class Config extends AbstractConfig
 
     public function isEnabled()
     {
-        $prevMimeSetting = $this->allowMimeConfig;
-        $prevAssetSetting = $this->allowAssetConfig;
-        $prevExtensionSetting = $this->allowExtensionConfig;
-
-        $this->enableAssetConfig(false);
-        $this->enableExtensionConfig(false);
-        $this->enableMimeConfig(false);
-
+        $this->enableGlobalConfig(true);
         $config = $this->getConfig(false);
-
-        $this->enableAssetConfig($prevAssetSetting);
-        $this->enableExtensionConfig($prevExtensionSetting);
-        $this->enableMimeConfig($prevMimeSetting);
+        $this->enableGlobalConfig(false);
 
         return (bool)$config['enabled'];
     }

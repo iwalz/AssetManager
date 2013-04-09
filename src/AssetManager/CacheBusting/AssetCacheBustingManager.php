@@ -5,47 +5,31 @@ namespace AssetManager\CacheBusting;
 class AssetCacheBustingManager
 {
     /**
-     * @var array
+     * @var Config
      */
-    protected $config = array();
+    protected $config = null;
 
     /**
-     * @param array $config
+     * @param Config $config
      */
-    public function __construct($config = array())
+    public function __construct(Config $config = null)
     {
         $this->config = $config;
     }
 
     /**
-     * @param array $config
+     * @param Config $config
      */
-    public function setConfig(array $config)
+    public function setConfig(Config $config)
     {
         $this->config = $config;
     }
 
     /**
-     * @return bool
+     * @return Config
      */
-    public function isEnabled()
+    public function getConfig()
     {
-        if (isset($this->config['enabled']) && $this->config['enabled']) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getOverrideHeadHelper()
-    {
-        if (isset($this->config['override_head_helper']) && $this->config['override_head_helper']) {
-            return true;
-        }
-
-        return false;
+        return $this->config;
     }
 }

@@ -58,6 +58,11 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
     protected $path = null;
 
     /**
+     * @var boolean
+     */
+    protected $enableGlobalConfig = null;
+
+    /**
      * @param array $config
      */
     public function __construct(array $config = array())
@@ -143,7 +148,7 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
             $config = array_merge($config, $globalConfig[static::getConfigKey()]);
         }
 
-        if ( $this->allowExtensionConfig ) {
+        if ( $this->allowExtensionConfig && !$this->enableGlobalConfig) {
             if (
                 $this->getMimeResolver() === null
                 || $this->getAsset() === null
@@ -157,7 +162,7 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
             }
         }
 
-        if ( $this->allowMimeConfig ) {
+        if ( $this->allowMimeConfig && !$this->enableGlobalConfig ) {
             if (
                 $this->getMimeResolver() === null
                 || $this->getAsset() === null
@@ -170,7 +175,7 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
             }
         }
 
-        if ( $this->allowAssetConfig ) {
+        if ( $this->allowAssetConfig && !$this->enableGlobalConfig ) {
             if (
                 $this->getPath() === null || $this->getPath() == ''
             ) {
@@ -284,6 +289,15 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
                 throw new InvalidArgumentException("Config key '$requiredKey' is missing in the config");
             }
         }
+    }
+
+    /**
+     * If true, the config only get the default setting - but don't need
+     * any further dependencies
+     */
+    protected function enableGlobalConfig($bool = true)
+    {
+        $this->enableGlobalConfig = $bool;
     }
 
     /**

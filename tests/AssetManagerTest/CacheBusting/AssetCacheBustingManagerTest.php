@@ -15,8 +15,7 @@ class AssetCacheBustingManagerTest extends PHPUnit_Framework_TestCase
             array(
                 'asset_manager' => array(
                     'cache_busting' => array(
-                        'enabled' => true,
-                        'override_head_helper' => true
+                        'enabled' => true
                     ),
                 ),
             )
@@ -25,15 +24,26 @@ class AssetCacheBustingManagerTest extends PHPUnit_Framework_TestCase
         $tmp = new \AssetManager\CacheBusting\AssetCacheBustingManagerServiceFactory($serviceManager);
         $cacheBustingManager = $tmp->createService($serviceManager);
 
-        $this->assertTrue($cacheBustingManager->isEnabled());
-        $this->assertTrue($cacheBustingManager->getOverrideHeadHelper());
+        $this->assertInstanceOf('AssetManager\Config\AbstractConfig', $cacheBustingManager->getConfig());
     }
 
     public function testDefaultSettings()
     {
-        $cacheBustingManager = new \AssetManager\CacheBusting\AssetCacheBustingManager();
+        $serviceManager = new ServiceManager();
+        $serviceManager->setService(
+            'Config',
+            array(
+                'asset_manager' => array(
+                    'cache_busting' => array(
+                        'enabled' => false
+                    ),
+                ),
+            )
+        );
 
-        $this->assertFalse($cacheBustingManager->isEnabled());
-        $this->assertFalse($cacheBustingManager->getOverrideHeadHelper());
+        $tmp = new \AssetManager\CacheBusting\AssetCacheBustingManagerServiceFactory($serviceManager);
+        $cacheBustingManager = $tmp->createService($serviceManager);
+
+        $this->assertFalse($cacheBustingManager->getConfig()->isEnabled());
     }
 }
