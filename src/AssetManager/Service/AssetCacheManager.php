@@ -17,6 +17,11 @@ class AssetCacheManager
     protected $config;
 
     /**
+     * @var Assetic\Cache\CacheInterface
+     */
+    protected $cache    = null;
+
+    /**
      * Construct the AssetCacheManager
      *
      * @param   array $config
@@ -48,15 +53,22 @@ class AssetCacheManager
     }
 
     /**
-     * Set the cache (if any) on the asset, and return the new AssetCache.
+     * Returns and initializes the cache
      *
-     * @param   string$path
-     * @param   AssetInterface $asset
-     *
-     * @return  AssetCache
+     * @param string $path
+     * @param AssetInterface $asset
+     * @return Assetic\Cache\CacheInterface
      */
-    public function setCache($path, AssetInterface $asset)
+    public function getCacheInstance($path = null, AssetInterface $asset = null)
     {
+        if ($this->cache !== null) {
+            return $this->cache;
+        }
+
+        if ($path === null || $asset === null) {
+            throw new Exception\InvalidArgumentException('You need to set the path and the asset to detect the cache settings');
+        }
+
         $caching = null;
         $config  = $this->getConfig();
 
@@ -115,6 +127,26 @@ class AssetCacheManager
             $options = empty($caching['options']) ? array() : $caching['options'];
             $cacher  = $factories[$type]($options);
         }
+
+        if (!$cacher instanceof CacheInterface) {
+            return $asset;
+        }
+        $this->cache = $cacher;
+
+        return $cacher;
+    }
+
+    /**
+     * Set the cache (if any) on the asset, and return the new AssetCache.
+     *
+     * @param   string$path
+     * @param   AssetInterface $asset
+     *
+     * @return  AssetCache
+     */
+    public function setCache($path, AssetInterface $asset)
+    {
+        $cacher = $this->getCacheInstance($path, $asset);
 
         if (!$cacher instanceof CacheInterface) {
             return $asset;
