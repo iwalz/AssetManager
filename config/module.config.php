@@ -12,6 +12,7 @@ return array(
             'AssetManager\Resolver\PathStackResolver'           => 'AssetManager\Service\PathStackResolverServiceFactory',
             'AssetManager\Resolver\PrioritizedPathsResolver'    => 'AssetManager\Service\PrioritizedPathsResolverServiceFactory',
             'AssetManager\Resolver\CollectionResolver'          => 'AssetManager\Service\CollectionResolverServiceFactory',
+            'AssetManager\CacheBusting\Cache'                   => 'AssetManager\CacheBusting\CacheFactory'
         ),
         'invokables' => array(
             'mime_resolver' => 'AssetManager\Service\MimeResolver',
@@ -35,6 +36,12 @@ return array(
         ),
         'cache_control' => array(
             'enabled' => false
+        ),
+        'cache_busting' => array(
+            'enabled' => false,
+            'cache' => 'Apc',
+            'lifetime' => 15724800,
+            'validation_lifetime' => 60
         )
     ),
 );

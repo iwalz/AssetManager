@@ -26,7 +26,7 @@ class HeadScriptServiceFactory implements FactoryInterface
         $config         = $serviceLocator->getServiceLocator()->get('Config');
         $config         = isset($config['asset_manager']) ? $config['asset_manager'] : array();
 
-        if ( isset($config['cache_busting']['enable']) ) {
+        if ( isset($config['cache_busting']['enabled']) ) {
 
             return new HeadScript($serviceLocator);
         }

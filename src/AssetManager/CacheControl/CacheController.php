@@ -54,23 +54,14 @@ class CacheController
     {
         $this->config->setAsset($asset);
 
-        if (
-            $this->requestInspector->isCacheBustingRequest()
-            && $this->requestInspector->isIfNoneMatchRequest()
-        ) {
-            $this->responseModifier->enableNotModified();
-
-            return $this->responseModifier->getResponse();
-        }
-
-        if ($this->requestInspector->isCacheBustingRequest()) {
-            $this->requestInspector->stripCacheBustingTag();
-        }
-
         // Handle Modified-Since requests
         if ($this->requestInspector->isIfModifiedSinceRequest()) {
             $lastModified = $asset->getLastModified();
             $modifiedSince = $this->requestInspector->getModifiedSince();
+
+            if (!is_null($this->responseModifier->getCache())) {
+                $this->addHeaders($asset);
+            }
 
             if ($lastModified <= $modifiedSince) {
                 $this->responseModifier->enableNotModified();
@@ -82,10 +73,14 @@ class CacheController
         // Handle None-Match requests, only if Modified-Since is not available
         if ($this->requestInspector->isIfNoneMatchRequest()) {
 
-            $checksumHandler = $this->requestInspector->getChecksumHandler();
+            $checksumHandler = $this->responseModifier->getChecksumHandler();
             $checksumHandler->setAsset($asset);
             $checksumHandler->setStrategy($strategy);
             $checksumHandler->setPath($this->config->getPath());
+
+            if (!is_null($this->responseModifier->getCache())) {
+                $this->addHeaders($asset);
+            }
 
             if ($this->requestInspector->getIfNoneMatch() == $checksumHandler->getChecksum()) {
                 $this->responseModifier->enableNotModified();

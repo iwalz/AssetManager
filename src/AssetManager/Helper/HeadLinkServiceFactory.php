@@ -27,10 +27,10 @@ class HeadLinkServiceFactory implements FactoryInterface
         $config         = isset($config['asset_manager']) ? $config['asset_manager'] : array();
 
         if (
-            isset($config['cache_busting']['enable'])
+            isset($config['cache_busting']['enabled'])
         ) {
 
-            return new HeadLink($serviceLocator);
+            return new HeadLink($serviceLocator->getServiceLocator());
         }
 
         return new StandardHeadLink();

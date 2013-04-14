@@ -4,8 +4,6 @@ namespace AssetManager\CacheControl;
 
 use Zend\Http\Header\IfNoneMatch;
 use Zend\Http\Request;
-use AssetManager\Checksum\ChecksumHandler;
-use AssetManager\Service\AssetFilterManager;
 
 /**
  * Inspects a request and provide information about the request behaviour
@@ -20,37 +18,11 @@ class RequestInspector
     protected $request = null;
 
     /**
-     * @var ChecksumHandler
-     */
-    protected $checksumHandler = null;
-
-    /**
-     * @var AssetFilterManager
-     */
-    protected $assetFilterManager = null;
-
-    /**
      * @param Request $request
      */
     public function __construct( Request $request = null)
     {
         $this->request = $request;
-    }
-
-    /**
-     * @param ChecksumHandler $checksumHandler
-     */
-    public function setChecksumHandler(ChecksumHandler $checksumHandler)
-    {
-        $this->checksumHandler = $checksumHandler;
-    }
-
-    /**
-     * @return ChecksumHandler|null
-     */
-    public function getChecksumHandler()
-    {
-        return $this->checksumHandler;
     }
 
     /**

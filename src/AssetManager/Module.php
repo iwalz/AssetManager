@@ -62,6 +62,16 @@ class Module implements
         $assetManager       = $serviceManager->get(__NAMESPACE__ . '\Service\AssetManager');
         $cacheController    = $assetManager->getCacheController();
 
+        $cacheBusting       = $assetManager->getCacheBustingManager();
+
+        if (!is_null($cacheBusting)) {
+            $cacheBustingResponse = $cacheBusting->handleRequest();
+
+            if ($cacheBustingResponse instanceof Response) {
+
+                return $cacheBustingResponse;
+            }
+        }
 
         if (!$assetManager->resolvesToAsset($request)) {
 
@@ -69,11 +79,13 @@ class Module implements
         }
 
         if (!is_null($cacheController)) {
-            $cacheController->setRequest($request);
-            $cacheController->setResponse($response);
-
             $asset = $assetManager->resolve($request);
             $cachedResponse = $cacheController->handleRequest($asset);
+
+            if (!is_null($cacheBusting)) {
+                $cacheBusting->getConfig()->setAsset($asset);
+            }
+
             if ($cachedResponse instanceof Response) {
 
                 return $cachedResponse;

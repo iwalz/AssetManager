@@ -5,6 +5,7 @@ namespace AssetManager\Service;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use AssetManager\CacheControl\Config as CacheControlConfig;
+use AssetManager\CacheBusting\Config as CacheBustingConfig;
 
 /**
  * Factory class for AssetManagerService
@@ -39,9 +40,14 @@ class AssetManagerServiceFactory implements FactoryInterface
         $assetManager->setAssetCacheManager($serviceLocator->get('AssetManager\Service\AssetCacheManager'));
 
         $cacheControlConfig = new CacheControlConfig($config);
+        $cacheBustingConfig = new CacheBustingConfig($config);
 
         if ($cacheControlConfig->isEnabled()) {
             $assetManager->setCacheController($serviceLocator->get('AssetManager\CacheControl\CacheController'));
+        }
+
+        if ($cacheBustingConfig->isEnabled()) {
+            $assetManager->setCacheBustingManager($serviceLocator->get('AssetManager\CacheBusting\AssetCacheBustingManager'));
         }
 
         return $assetManager;

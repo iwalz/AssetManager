@@ -2,6 +2,7 @@
 
 namespace AssetManager\Service;
 
+use AssetManager\CacheBusting\AssetCacheBustingManager;
 use Assetic\Asset\AssetInterface;
 use AssetManager\Service\AssetFilterManagerAwareInterface;
 use AssetManager\CacheControl\CacheController;
@@ -39,6 +40,11 @@ class AssetManager implements
      * @var CacheController The cache control service
      */
     protected $cacheController;
+
+    /**
+     * @var CacheBustingManager
+     */
+    protected $cacheBustingManager;
 
     /**
      * @var AssetInterface The asset
@@ -92,6 +98,22 @@ class AssetManager implements
         }
 
         return (bool)$this->asset;
+    }
+
+    /**
+     * @param AssetCacheBustingManager $cacheBustingManager
+     */
+    public function setCacheBustingManager(AssetCacheBustingManager $cacheBustingManager)
+    {
+        $this->cacheBustingManager = $cacheBustingManager;
+    }
+
+    /**
+     * @return CacheBustingManager
+     */
+    public function getCacheBustingManager()
+    {
+        return $this->cacheBustingManager;
     }
 
     /**

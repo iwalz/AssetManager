@@ -31,4 +31,18 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 
         $this->assertFalse($cacheBustingConfig->isEnabled());
     }
+
+    public function testDefaultCache()
+    {
+        $config = array(
+            'asset_manager' => array(
+                'cache_busting' => array(
+                    'enabled' => true
+                )
+            )
+        );
+        $cacheBustingConfig = new Config($config);
+
+        $this->assertFalse($cacheBustingConfig->getCache());
+    }
 }

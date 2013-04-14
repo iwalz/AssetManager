@@ -22,6 +22,7 @@ class DispatchTest extends AbstractControllerTestCase
         $config['asset_manager']['cache_control']['enabled'] = true;
         $this->getApplicationServiceLocator()->setAllowOverride(true);
         $this->getApplicationServiceLocator()->setService('Config', $config);
+
         $request = $this->getApplication()->getRequest();
         $request->getHeaders()->addHeaderLine('If-Modified-Since', date("D,d M Y H:i:s T", time()));
         $this->dispatch('/foo.js');

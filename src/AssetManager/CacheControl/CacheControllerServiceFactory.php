@@ -2,6 +2,7 @@
 
 namespace AssetManager\CacheControl;
 
+use AssetManager\CacheBusting\Config as CacheBustingConfig;
 use AssetManager\Checksum\ChecksumHandler;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -25,21 +26,18 @@ class CacheControllerServiceFactory implements FactoryInterface
     {
         $config = new Config($serviceLocator->get('Config'));
 
-        if (!$config->isEnabled()) {
-
-            return false;
-        }
-
         $config->setMimeResolver($serviceLocator->get('mime_resolver'));
         $cacheController = new CacheController($config);
         $requestInspector = new RequestInspector();
         $responseModifier = new ResponseModifier();
         $checksumHandler = new ChecksumHandler();
         $responseModifier->setChecksumHandler($checksumHandler);
-        $requestInspector->setChecksumHandler($checksumHandler);
         $responseModifier->setConfig($config);
         $cacheController->setRequestInspector($requestInspector);
         $cacheController->setResponseModifier($responseModifier);
+
+        $cacheController->setRequest($serviceLocator->get('Request'));
+        $cacheController->setResponse($serviceLocator->get('Response'));
 
         return $cacheController;
     }

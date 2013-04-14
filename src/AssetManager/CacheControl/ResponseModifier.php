@@ -4,6 +4,7 @@ namespace AssetManager\CacheControl;
 
 
 use Assetic\Asset\AssetInterface;
+use Assetic\Cache\CacheInterface;
 use Zend\Http\Response;
 use AssetManager\Checksum\ChecksumHandler;
 
@@ -28,6 +29,11 @@ class ResponseModifier
      * @var ChecksumHandler
      */
     protected $checksumHandler = null;
+
+    /**
+     * @var CacheInterface
+     */
+    protected $cache = null;
 
     /**
      * @param Response $response
@@ -116,7 +122,23 @@ class ResponseModifier
 
         $this->checksumHandler->setAsset($asset);
         $this->checksumHandler->setStrategy($strategy);
-        $headers->addHeaderLine('ETag', $this->checksumHandler->getChecksum());
+        $etag = $this->checksumHandler->getChecksum();
+        $headers->addHeaderLine('ETag', $etag);
+
+        if (!is_null($this->cache)) {
+            $this->cache->set($asset->getSourcePath() . '_etag', $etag);
+            $this->cache->set($asset->getSourcePath() . '_lastmodified', $lastModified);
+        }
+    }
+
+    public function setCache(CacheInterface $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    public function getCache()
+    {
+        return $this->cache;
     }
 
 }

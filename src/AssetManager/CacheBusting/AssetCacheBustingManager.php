@@ -2,12 +2,25 @@
 
 namespace AssetManager\CacheBusting;
 
+use AssetManager\CacheControl\CacheController;
+
+/**
+ * Manages the CacheBusting behaviour
+ *
+ * @category   AssetManager
+ * @package    AssetManager
+ */
 class AssetCacheBustingManager
 {
     /**
      * @var Config
      */
     protected $config = null;
+
+    /**
+     * @var CacheController
+     */
+    protected $cacheController = null;
 
     /**
      * @param Config $config
@@ -31,5 +44,45 @@ class AssetCacheBustingManager
     public function getConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * @param CacheController $cacheController
+     */
+    public function setCacheController(CacheController $cacheController)
+    {
+        $this->cacheController = $cacheController;
+    }
+
+    /**
+     * @return CacheController|null
+     */
+    public function getCacheController()
+    {
+        return $this->cacheController;
+    }
+
+    /**
+     * Handles specific cache busting use cases
+     *
+     * @return null|\Zend\Http\Response
+     */
+    public function handleRequest()
+    {
+        $requestInspector = $this->cacheController->getRequestInspector();
+
+        if (!$requestInspector->isCacheBustingRequest()) {
+
+            return;
+        }
+
+        if ($requestInspector->isIfNoneMatchRequest() || $requestInspector->isIfModifiedSinceRequest()) {
+            $responseModifier = $this->cacheController->getResponseModifier();
+            $responseModifier->enableNotModified();
+
+            return $responseModifier->getResponse();
+        }
+        $requestInspector->stripCacheBustingTag();
+
     }
 }

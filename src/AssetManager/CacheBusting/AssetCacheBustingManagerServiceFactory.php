@@ -5,6 +5,12 @@ namespace AssetManager\CacheBusting;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
+/**
+ * Factory class for AssetCacheBustingManager
+ *
+ * @category   AssetManager
+ * @package    AssetManager
+ */
 class AssetCacheBustingManagerServiceFactory implements FactoryInterface
 {
     /**
@@ -18,6 +24,12 @@ class AssetCacheBustingManagerServiceFactory implements FactoryInterface
         $config         = new Config($globalConfig);
 
         $assetCacheBustingManager = new AssetCacheBustingManager($config);
+        $cacheController = $serviceLocator->get('AssetManager\CacheControl\CacheController');
+        $cacheController->setConfig(new CacheControllerConfig($globalConfig));
+        $cache = $serviceLocator->get('AssetManager\CacheBusting\Cache');
+
+        $cacheController->getResponseModifier()->setCache($cache);
+        $assetCacheBustingManager->setCacheController($cacheController);
 
         return $assetCacheBustingManager;
     }

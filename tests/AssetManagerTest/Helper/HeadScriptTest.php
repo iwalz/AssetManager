@@ -4,6 +4,7 @@ namespace AssetManagerTest;
 
 use AssetManager\Helper\HeadScriptServiceFactory;
 use PHPUnit_Framework_TestCase;
+use Zend\Http\Request;
 use Zend\View\Renderer\PhpRenderer as View;
 use Zend\View\HelperPluginManager;
 use Zend\ServiceManager\ServiceManager;
@@ -17,13 +18,14 @@ class HeadScriptTest extends PHPUnit_Framework_TestCase
 
         $sm = new ServiceManager();
         $sm->setService('Config', array(
-                'asset_manager' => array(
-                    'cache_busting' => array(
-                        'enable' => true
-                    )
+            'asset_manager' => array(
+                'cache_busting' => array(
+                    'enabled' => true
                 )
             )
+        )
         );
+        $sm->setService('Request', new Request());
         $pm->setServiceLocator($sm);
 
         $headScript = $pm->get('headscript');

@@ -2,6 +2,8 @@
 
 namespace AssetManagerTest\CacheControl;
 
+use Zend\Http\PhpEnvironment\Request;
+use Zend\Http\PhpEnvironment\Response;
 use AssetManager\Service\MimeResolver;
 use PHPUnit_Framework_TestCase;
 use AssetManager\CacheControl\CacheControllerServiceFactory;
@@ -22,6 +24,9 @@ class CacheControllerServiceFactoryTest extends PHPUnit_Framework_TestCase
                     'lifetime' => '5m',
                     'etag' => true,
                     'enabled' => true
+                ),
+                'cache_busting' => array(
+                    'enabled' => false
                 )
             )
         );
@@ -32,6 +37,9 @@ class CacheControllerServiceFactoryTest extends PHPUnit_Framework_TestCase
         $serviceManager = new ServiceManager();
         $serviceManager->setService('Config', $this->config);
         $serviceManager->setService('mime_resolver', new MimeResolver());
+        $serviceManager->setService('Request', new Request());
+        $serviceManager->setService('Response', new Response());
+
 
         $factory = new CacheControllerServiceFactory();
         $cacheController = $factory->createService($serviceManager);

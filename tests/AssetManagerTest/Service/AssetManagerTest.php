@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../_files/JSMin.inc';
 require_once __DIR__ . '/../../_files/CustomFilter.php';
 require_once __DIR__ . '/../../_files/BrokenFilter.php';
 
+use AssetManager\CacheBusting\AssetCacheBustingManager;
 use AssetManager\CacheControl\CacheController;
 use AssetManager\CacheControl\RequestInspector;
 use AssetManager\CacheControl\ResponseModifier;
@@ -58,11 +59,17 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $responseModifier->setResponse($response);
         $cacheController->setConfig($config);
         $responseModifier->setChecksumHandler($checksumHandler);
-        $requestInspector->setChecksumHandler($checksumHandler);
         $cacheController->setResponseModifier($responseModifier);
         $cacheController->setRequestInspector($requestInspector);
 
         return $cacheController;
+    }
+
+    protected function getCacheBustingManager()
+    {
+        $cacheBustingManager = new AssetCacheBustingManager();
+
+        return $cacheBustingManager;
     }
 
     protected function getResolver($resolveTo = __FILE__)
@@ -406,6 +413,41 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($assetManager->resolvesToAsset($request));
         $assetManager->setAssetOnResponse($response);
         $this->assertEquals(file_get_contents(__FILE__), $response->getBody());
+    }
+
+    public function testCacheInjectedToCacheBustingManager()
+    {
+        /*$config = array(
+            'caching' => array(
+                'default' => array(
+                    'cache'   => 'FilePath',
+                    'options' => array(
+                        'dir' => '/tmp',
+                    ),
+                ),
+            ),
+        );
+
+        $assetFilterManager = new \AssetManager\Service\AssetFilterManager();
+        $assetCacheManager  = new \AssetManager\Service\AssetCacheManager($config['caching']);
+        $mimeResolver       = new MimeResolver;
+        $response           = new Response;
+        $resolver           = $this->getResolver();
+        $request            = $this->getRequest();
+        $assetManager       = new AssetManager($resolver, $config);
+        $assetFilterManager->setMimeResolver($mimeResolver);
+
+        $cacheController        = $this->getCacheController($response);
+        $cacheBustingManager    = $this->getCacheBustingManager();
+        $assetManager->setCacheController($cacheController);
+        $assetManager->setCacheBustingManager($cacheBustingManager);
+
+
+        $assetManager->setAssetFilterManager($assetFilterManager);
+        $assetManager->setAssetCacheManager($assetCacheManager);
+        $this->assertTrue($assetManager->resolvesToAsset($request));
+        $assetManager->setAssetOnResponse($response);
+        $this->assertSame($assetCacheManager->getCacheInstance(), $cacheBustingManager->getCache());*/
     }
 
     public function testSetStandardCacheAssetSpecific()

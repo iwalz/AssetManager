@@ -34,6 +34,9 @@ class AssetManagerServiceFactoryTest extends PHPUnit_Framework_TestCase
                 'cache_control' => array(
                     'enabled' => false
                 ),
+                'cache_busting' => array(
+                    'enabled' => false
+                ),
                 'Dummy data',
                 'Bacon',
             ),
