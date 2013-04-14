@@ -75,13 +75,11 @@ class HeadLink extends StandardHeadLink
     {
         $newContainer = new Container();
 
-        foreach(parent::getContainer() as $include)
-        {
+        foreach(parent::getContainer() as $include) {
             $href = $include->href;
             $fileName = substr($href, strrpos($href, '/')+1);
 
             if ($this->cache->has($fileName . '_etag')) {
-
                 $include->href = $href . ';AM' . $this->cache->get($fileName . '_etag');
                 $newContainer->append($include);
                 continue;
