@@ -1,7 +1,6 @@
 <?php
 namespace AssetManager\Helper;
 
-use Assetic\Asset\StringAsset;
 use Assetic\Cache\CacheInterface;
 use Zend\View\Helper\HeadLink as StandardHeadLink;
 use Zend\ServiceManager\ServiceLocatorInterface;

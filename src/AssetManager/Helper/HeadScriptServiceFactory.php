@@ -28,7 +28,7 @@ class HeadScriptServiceFactory implements FactoryInterface
 
         if ( isset($config['cache_busting']['enabled']) ) {
 
-            return new HeadScript($serviceLocator);
+            return new HeadScript($serviceLocator->getServiceLocator());
         }
 
         return new StandardHeadScript();
