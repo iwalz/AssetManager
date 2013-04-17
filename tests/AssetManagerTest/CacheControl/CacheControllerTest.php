@@ -94,15 +94,17 @@ class CacheControllerTest extends PHPUnit_Framework_TestCase
         $this->assertNull($cachedResponse);
     }
 
-    public function testHandleRequestWithCacheBustingAndIfNoneMatch()
+    public function testHandleRequestWithCacheBustingAndIfModifiedSince()
     {
-        /*$cacheController = new CacheController();
+        $cacheController = new CacheController();
         $responseModifier = new ResponseModifier();
         $checksumHandler = new ChecksumHandler();
         $requestInspector = $this->getMock('AssetManager\CacheControl\RequestInspector', array('isIfNoneMatchRequest', 'isCacheBustingRequest'));
         $config = $this->getMock('AssetManager\CacheControl\Config');
 
         $request = new Request();
+        $request->getHeaders()->addHeaderLine('If-None-Match', '1234-test');
+        $request->getHeaders()->addHeaderLine('If-Modified-Since', 'Tue, 15 Jan 2013 17:58:53 GMT');
         $response = new Response();
 
         $responseModifier->setResponse($response);
@@ -121,7 +123,107 @@ class CacheControllerTest extends PHPUnit_Framework_TestCase
         $cachedResponse = $cacheController->handleRequest($asset);
 
         $this->assertSame(304, $cachedResponse->getStatusCode());
-        */
+    }
+
+    public function testHandleRequestWithCacheBustingAndIfModifiedSinceWithCache()
+    {
+        $cacheController = new CacheController();
+        $responseModifier = new ResponseModifier();
+        $cache = $this->getMock('Assetic\Cache\ApcCache');
+        $responseModifier->setCache($cache);
+        $checksumHandler = $this->getMock('AssetManager\Checksum\ChecksumHandler', array('getChecksum'));
+        $checksumHandler->expects($this->once())->method('getChecksum')->will($this->returnValue('1234-test'));
+        $requestInspector = $this->getMock('AssetManager\CacheControl\RequestInspector', array('isIfNoneMatchRequest', 'isCacheBustingRequest'));
+        $config = $this->getMock('AssetManager\CacheControl\Config');
+
+        $request = new Request();
+        $request->getHeaders()->addHeaderLine('If-None-Match', '1234-tes');
+        $request->getHeaders()->addHeaderLine('If-Modified-Since', 'Tue, 15 Jan 2013 17:58:53 GMT');
+        $response = new Response();
+
+        $responseModifier->setResponse($response);
+        $responseModifier->setChecksumHandler($checksumHandler);
+        $cacheController->setRequestInspector($requestInspector);
+        $cacheController->setResponseModifier($responseModifier);
+        $cacheController->setConfig($config);
+        $cacheController->setRequest($request);
+        $cacheController->setResponse($response);
+
+        $asset = $this->getMock('Assetic\Asset\FileAsset', array('getLastModified'), array(__FILE__));
+        $asset->expects($this->exactly(2))->method('getLastModified')->will($this->returnValue(12345));
+
+        $requestInspector->expects($this->any())->method('isIfNoneMatchRequest')->will($this->returnValue(false));
+        $requestInspector->expects($this->any())->method('isCacheBustingRequest')->will($this->returnValue(true));
+
+        $cachedResponse = $cacheController->handleRequest($asset);
+
+        $this->assertSame(304, $cachedResponse->getStatusCode());
+    }
+
+    public function testHandleRequestWithCacheBustingIfNoneMatch()
+    {
+        $cacheController = new CacheController();
+        $responseModifier = new ResponseModifier();
+        $checksumHandler = $this->getMock('AssetManager\Checksum\ChecksumHandler', array('getChecksum'));
+        $checksumHandler->setStrategy('etag');
+        $checksumHandler->expects($this->once())->method('getChecksum')->will($this->returnValue('1234-test'));
+
+        $requestInspector = $this->getMock('AssetManager\CacheControl\RequestInspector', array('isIfNoneMatchRequest', 'isCacheBustingRequest'));
+        $config = $this->getMock('AssetManager\CacheControl\Config');
+
+        $request = new Request();
+        $request->getHeaders()->addHeaderLine('If-None-Match', '1234-test');
+        $response = new Response();
+
+        $responseModifier->setResponse($response);
+        $responseModifier->setChecksumHandler($checksumHandler);
+        $cacheController->setRequestInspector($requestInspector);
+        $cacheController->setResponseModifier($responseModifier);
+        $cacheController->setConfig($config);
+        $cacheController->setRequest($request);
+        $cacheController->setResponse($response);
+
+        $asset = $this->getMock('Assetic\Asset\FileAsset', array('getLastModified'), array(__FILE__));
+
+        $requestInspector->expects($this->any())->method('isIfNoneMatchRequest')->will($this->returnValue(true));
+        $requestInspector->expects($this->any())->method('isCacheBustingRequest')->will($this->returnValue(true));
+
+        $cachedResponse = $cacheController->handleRequest($asset);
+        $this->assertSame(304, $cachedResponse->getStatusCode());
+    }
+
+    public function testHandleRequestWithCacheBustingIfNoneMatchAndCache()
+    {
+        $cacheController = new CacheController();
+        $responseModifier = new ResponseModifier();
+        $cache = $this->getMock('Assetic\Cache\ApcCache');
+        $responseModifier->setCache($cache);
+        $checksumHandler = $this->getMock('AssetManager\Checksum\ChecksumHandler', array('getChecksum'));
+        $checksumHandler->setStrategy('etag');
+        $checksumHandler->expects($this->exactly(2))->method('getChecksum')->will($this->returnValue('1234-test'));
+
+        $requestInspector = $this->getMock('AssetManager\CacheControl\RequestInspector', array('isIfNoneMatchRequest', 'isCacheBustingRequest'));
+        $config = $this->getMock('AssetManager\CacheControl\Config');
+
+        $request = new Request();
+        $request->getHeaders()->addHeaderLine('If-None-Match', '1234-test');
+        $response = new Response();
+
+        $responseModifier->setResponse($response);
+        $responseModifier->setChecksumHandler($checksumHandler);
+        $cacheController->setRequestInspector($requestInspector);
+        $cacheController->setResponseModifier($responseModifier);
+        $cacheController->setConfig($config);
+        $cacheController->setRequest($request);
+        $cacheController->setResponse($response);
+
+        $asset = $this->getMock('Assetic\Asset\FileAsset', array('getLastModified'), array(__FILE__));
+
+        $requestInspector->expects($this->any())->method('isIfNoneMatchRequest')->will($this->returnValue(true));
+        $requestInspector->expects($this->any())->method('isCacheBustingRequest')->will($this->returnValue(true));
+
+        $cachedResponse = $cacheController->handleRequest($asset);
+        $this->assertSame(304, $cachedResponse->getStatusCode());
     }
 
     public function testHandleRequestWithCacheBustingWithoutIfNoneMatch()

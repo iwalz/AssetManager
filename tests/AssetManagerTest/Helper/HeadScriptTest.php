@@ -2,6 +2,7 @@
 
 namespace AssetManagerTest;
 
+use AssetManager\CacheBusting\CacheFactory;
 use AssetManager\Helper\HeadScriptServiceFactory;
 use PHPUnit_Framework_TestCase;
 use Zend\Http\Request;
@@ -17,10 +18,13 @@ class HeadScriptTest extends PHPUnit_Framework_TestCase
         $pm->setFactory('headscript', new HeadScriptServiceFactory());
 
         $sm = new ServiceManager();
+        $sm->setFactory('AssetManager\CacheBusting\Cache', new CacheFactory());
         $sm->setService('Config', array(
             'asset_manager' => array(
                 'cache_busting' => array(
-                    'enabled' => true
+                    'enabled' => true,
+                    'cache' => 'Apc',
+                    'validation_lifetime' => 60
                 )
             )
         )
