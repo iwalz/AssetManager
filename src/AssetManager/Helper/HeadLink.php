@@ -5,6 +5,7 @@ use Assetic\Cache\CacheInterface;
 use Zend\View\Helper\HeadLink as StandardHeadLink;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Helper\Placeholder\Container;
+use Zend\Http\PhpEnvironment\Request;
 
 class HeadLink extends StandardHeadLink
 {
@@ -31,8 +32,8 @@ class HeadLink extends StandardHeadLink
     {
         parent::__construct();
         $this->sl = $sl;
-        $this->request = !is_null($request) ?: $this->sl->get('Request');
-        $this->cache = !is_null($cache) ?: $this->sl->get('AssetManager\CacheBusting\Cache');
+        $this->request = !is_null($request) ? $request : $this->sl->get('Request');
+        $this->cache = !is_null($cache) ? $cache : $this->sl->get('AssetManager\CacheBusting\Cache');
     }
 
     /**
@@ -89,7 +90,7 @@ class HeadLink extends StandardHeadLink
 
         parent::setContainer($newContainer);
 
-        return parent::toString();
+        return parent::toString($indent);
     }
 
     /**

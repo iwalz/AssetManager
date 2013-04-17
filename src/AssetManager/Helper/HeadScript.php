@@ -4,6 +4,8 @@ namespace AssetManager\Helper;
 use Zend\View\Helper\HeadScript as StandardHeadScript;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Helper\Placeholder\Container;
+use Zend\Http\PhpEnvironment\Request;
+use Assetic\Cache\CacheInterface;
 
 class HeadScript extends StandardHeadScript
 {
@@ -30,8 +32,8 @@ class HeadScript extends StandardHeadScript
     {
         parent::__construct();
         $this->sl = $sl;
-        $this->request = !is_null($request) ?: $this->sl->get('Request');
-        $this->cache = !is_null($cache) ?: $this->sl->get('AssetManager\CacheBusting\Cache');
+        $this->request = !is_null($request) ? $request : $this->sl->get('Request');
+        $this->cache = !is_null($cache) ? $cache : $this->sl->get('AssetManager\CacheBusting\Cache');
     }
 
     /**
@@ -88,7 +90,7 @@ class HeadScript extends StandardHeadScript
 
         parent::setContainer($newContainer);
 
-        return parent::toString();
+        return parent::toString($indent);
     }
 
     /**
