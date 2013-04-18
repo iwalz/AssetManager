@@ -59,4 +59,18 @@ class Config extends AbstractConfig
     {
         return array('lifetime');
     }
+
+    public function getStrategy()
+    {
+        $config = $this->getConfig();
+
+        return isset($config['strategy']) ? $config['strategy'] : false;
+    }
+
+    public function getStatic()
+    {
+        $config = $this->getConfig();
+
+        return $config['static'];
+    }
 }

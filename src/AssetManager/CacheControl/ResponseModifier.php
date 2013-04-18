@@ -108,9 +108,10 @@ class ResponseModifier
     }
 
 
-    public function addHeaders(AssetInterface $asset, $strategy = 'etag')
+    public function addHeaders(AssetInterface $asset)
     {
         $headers = $this->response->getHeaders();
+        $strategy = $this->config->getStrategy();
 
         $lastModified = date("D,d M Y H:i:s T", $asset->getLastModified());
         $lifetime = $this->config->getLifetime();
@@ -121,11 +122,15 @@ class ResponseModifier
         $headers->addHeaderLine('Pragma', '');
 
         $this->checksumHandler->setAsset($asset);
-        $this->checksumHandler->setStrategy($strategy);
+        if ($strategy) {
+            $this->checksumHandler->setStrategy($strategy);
+            $this->checksumHandler->setConfig($this->config);
+        }
         $etag = $this->checksumHandler->getChecksum();
         $headers->addHeaderLine('ETag', $etag);
 
         if (!is_null($this->cache)) {
+            $this->cache->ttl = $this->config->getValidationLifetime();
             $this->cache->set($asset->getSourcePath() . '_etag', $etag);
             $this->cache->set($asset->getSourcePath() . '_lastmodified', $lastModified);
         }

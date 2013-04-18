@@ -40,7 +40,8 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
             array(
                 'asset_manager' => array(
                     'cache_control' => array(
-                        'lifetime' => '5m'
+                        'lifetime' => '5m',
+                        'strategy' => 'etag'
                     )
                 )
             )

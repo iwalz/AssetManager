@@ -77,6 +77,7 @@ class CacheController
             $checksumHandler->setAsset($asset);
             $checksumHandler->setStrategy($strategy);
             $checksumHandler->setPath($this->config->getPath());
+            $checksumHandler->setConfig($this->config);
 
             if (!is_null($this->responseModifier->getCache())) {
                 $this->addHeaders($asset);

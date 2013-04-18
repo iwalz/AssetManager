@@ -134,7 +134,7 @@ class CacheControllerTest extends PHPUnit_Framework_TestCase
         $checksumHandler = $this->getMock('AssetManager\Checksum\ChecksumHandler', array('getChecksum'));
         $checksumHandler->expects($this->once())->method('getChecksum')->will($this->returnValue('1234-test'));
         $requestInspector = $this->getMock('AssetManager\CacheControl\RequestInspector', array('isIfNoneMatchRequest', 'isCacheBustingRequest'));
-        $config = $this->getMock('AssetManager\CacheControl\Config');
+        $config = $this->getMock('AssetManager\CacheBusting\CacheControllerConfig');
 
         $request = new Request();
         $request->getHeaders()->addHeaderLine('If-None-Match', '1234-tes');
@@ -203,7 +203,7 @@ class CacheControllerTest extends PHPUnit_Framework_TestCase
         $checksumHandler->expects($this->exactly(2))->method('getChecksum')->will($this->returnValue('1234-test'));
 
         $requestInspector = $this->getMock('AssetManager\CacheControl\RequestInspector', array('isIfNoneMatchRequest', 'isCacheBustingRequest'));
-        $config = $this->getMock('AssetManager\CacheControl\Config');
+        $config = $this->getMock('AssetManager\CacheBusting\CacheControllerConfig');
 
         $request = new Request();
         $request->getHeaders()->addHeaderLine('If-None-Match', '1234-test');
@@ -231,7 +231,7 @@ class CacheControllerTest extends PHPUnit_Framework_TestCase
         $cacheController = new CacheController();
         $responseModifier = new ResponseModifier();
         $requestInspector = $this->getMock('AssetManager\CacheControl\RequestInspector', array('isCacheBustingRequest', 'stripCacheBustingTag'));
-        $config = $this->getMock('AssetManager\CacheControl\Config');
+        $config = $this->getMock('AssetManager\CacheBusting\CacheControllerConfig');
 
         $request = new Request();
         $response = new Response();

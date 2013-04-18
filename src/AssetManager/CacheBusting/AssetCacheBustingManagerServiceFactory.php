@@ -22,10 +22,13 @@ class AssetCacheBustingManagerServiceFactory implements FactoryInterface
     {
         $globalConfig   = $serviceLocator->get('Config');
         $config         = new Config($globalConfig);
+        $cacheControllerConfig = new CacheControllerConfig($globalConfig);
+        $cacheControllerConfig->setMimeResolver($serviceLocator->get('mime_resolver'));
+        $cacheControllerConfig->setPath($serviceLocator->get('Request'));
 
         $assetCacheBustingManager = new AssetCacheBustingManager($config);
         $cacheController = $serviceLocator->get('AssetManager\CacheControl\CacheController');
-        $cacheController->setConfig(new CacheControllerConfig($globalConfig));
+        $cacheController->setConfig($cacheControllerConfig);
         $cache = $serviceLocator->get('AssetManager\CacheBusting\Cache');
 
         $cacheController->getResponseModifier()->setCache($cache);

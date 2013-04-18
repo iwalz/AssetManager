@@ -35,13 +35,15 @@ return array(
             'AssetManager\Resolver\PathStackResolver'           => 500,
         ),
         'cache_control' => array(
-            'enabled' => false
+            'enabled' => false,
+            'strategy' => 'etag'
         ),
         'cache_busting' => array(
             'enabled' => false,
             'cache' => 'Apc',
             'lifetime' => 15724800,
-            'validation_lifetime' => 60
+            'validation_lifetime' => 60,
+            'strategy' => 'lastmodified'
         )
     ),
 );

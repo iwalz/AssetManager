@@ -2,7 +2,9 @@
 
 namespace AssetManager\Checksum;
 
+use AssetManager\CacheControl\Config;
 use AssetManager\Checksum\Strategy\AbstractStrategyFactory;
+use AssetManager\Checksum\Strategy\StaticStrategy;
 use AssetManager\Checksum\Strategy\StrategyInterface;
 use AssetManager\Exception\InvalidArgumentException;
 use AssetManager\Service\AssetFilterManager;
@@ -42,6 +44,11 @@ class ChecksumHandler
      * @var string
      */
     protected $path             = null;
+
+    /**
+     * @var \AssetManager\CacheControl\Config
+     */
+    protected $config           = null;
 
     /**
      * @param AssetFilterManager $assetFilterManager
@@ -118,6 +125,10 @@ class ChecksumHandler
         }
         $strategy->setAsset($this->asset);
 
+        if ( $strategy instanceof StaticStrategy && $this->config ) {
+            $strategy->setStatic($this->config->getStatic());
+        }
+
         return $strategy->getChecksum();
     }
 
@@ -143,5 +154,21 @@ class ChecksumHandler
     public function getAsset()
     {
         return $this->asset;
+    }
+
+    /**
+     * @param Config $config
+     */
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * @return Config|null
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 }

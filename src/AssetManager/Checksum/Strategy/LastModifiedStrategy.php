@@ -6,6 +6,6 @@ class LastModifiedStrategy extends AbstractStrategy
 {
     public function getChecksum()
     {
-
+        return $this->asset->getLastModified();
     }
 }
