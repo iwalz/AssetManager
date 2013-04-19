@@ -136,7 +136,7 @@ class ResponseModifier
         }
     }
 
-    public function setCache(CacheInterface $cache)
+    public function setCache($cache)
     {
         $this->cache = $cache;
     }

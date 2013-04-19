@@ -83,6 +83,8 @@ class AssetCacheBustingManager
             return $responseModifier->getResponse();
         }
         $requestInspector->stripCacheBustingTag();
+        $responseModifier = $this->cacheController->getResponseModifier();
+        $responseModifier->setCache(null);
 
     }
 }
