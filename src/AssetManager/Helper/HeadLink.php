@@ -7,6 +7,11 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Helper\Placeholder\Container;
 use Zend\Http\PhpEnvironment\Request;
 
+/**
+ * Inherited HeadLink that is used to add the hashes from the cache
+ *
+ * @package AssetManager\Helper
+ */
 class HeadLink extends StandardHeadLink
 {
     /**
@@ -26,7 +31,6 @@ class HeadLink extends StandardHeadLink
 
     /**
      * {@inheritDoc}
-     * @param \Zend\ServiceManager\ServiceLocatorInterface $sl
      */
     public function __construct(ServiceLocatorInterface $sl, Request $request = null, CacheInterface $cache = null)
     {

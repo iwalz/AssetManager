@@ -5,8 +5,16 @@ namespace AssetManager\Config;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 
+/**
+ * AbstractConfigFactory to create different configs
+ * @package AssetManager\Config
+ */
 class AbstractConfigFactory implements AbstractFactoryInterface
 {
+
+    /**
+     * {@inheritDoc}
+     */
     public function canCreateServiceWithName(
         ServiceLocatorInterface $serviceLocator,
         $name,
@@ -27,6 +35,9 @@ class AbstractConfigFactory implements AbstractFactoryInterface
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function createServiceWithName (
         ServiceLocatorInterface $serviceLocator,
         $name,

@@ -2,8 +2,16 @@
 
 namespace AssetManager\Checksum\Strategy;
 
+/**
+ * EtagStrategy simulates the apache etag, but does not contain the inode information
+ *
+ * @package AssetManager\Checksum\Strategy
+ */
 class EtagStrategy extends AbstractStrategy
 {
+    /**
+     * {@inheritDoc}
+     */
     public function getChecksum()
     {
         $size = strlen($this->asset->dump());

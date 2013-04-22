@@ -107,7 +107,11 @@ class ResponseModifier
         }
     }
 
-
+    /**
+     * Add headers based on the given asset
+     *
+     * @param AssetInterface $asset
+     */
     public function addHeaders(AssetInterface $asset)
     {
         $headers = $this->response->getHeaders();
@@ -136,11 +140,17 @@ class ResponseModifier
         }
     }
 
+    /**
+     * @param $cache
+     */
     public function setCache($cache)
     {
         $this->cache = $cache;
     }
 
+    /**
+     * @return CacheInterface|null
+     */
     public function getCache()
     {
         return $this->cache;

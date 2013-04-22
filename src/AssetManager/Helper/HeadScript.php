@@ -7,6 +7,11 @@ use Zend\View\Helper\Placeholder\Container;
 use Zend\Http\PhpEnvironment\Request;
 use Assetic\Cache\CacheInterface;
 
+/**
+ * Inherited HeadScript that is used to add the hashes from the cache
+ *
+ * @package AssetManager\Helper
+ */
 class HeadScript extends StandardHeadScript
 {
     /**

@@ -57,6 +57,11 @@ class Config extends AbstractConfig
         return $config['cache'];
     }
 
+    /**
+     * Get the cache lifetime
+     *
+     * @return int
+     */
     public function getValidationLifetime()
     {
         $config = $this->getConfig();

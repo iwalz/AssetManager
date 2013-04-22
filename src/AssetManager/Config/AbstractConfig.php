@@ -13,46 +13,64 @@ use Zend\Http\Request;
 abstract class AbstractConfig implements Countable, IteratorAggregate
 {
     /**
+     * The whole module config, used as a base
+     *
      * @var array
      */
     protected $config = array();
 
     /**
+     * The parsed config
+     *
      * @var array
      */
     protected $internalConfig = null;
 
     /**
+     * The asset, needed for asset configuration
+     *
      * @var AssetInterface
      */
     protected $asset = null;
 
     /**
+     * The MimeResolver for mime specific configuration
+     *
      * @var MimeResolver
      */
     protected $mimeResolver = null;
 
     /**
+     * Enable/Disable configuration on the root level
+     *
      * @var bool
      */
     protected $allowGeneralConfig = null;
 
     /**
+     * Enable/Disable asset configuration
+     *
      * @var bool
      */
     protected $allowAssetConfig = null;
 
     /**
+     * Enable/Disable mime configuration
+     *
      * @var bool
      */
     protected $allowMimeConfig = null;
 
     /**
+     * Enable/Disable the extension configuration
+     *
      * @var null
      */
     protected $allowExtensionConfig = null;
 
     /**
+     * The path, relevant to know which config section to match
+     *
      * @var string
      */
     protected $path = null;
@@ -130,6 +148,9 @@ abstract class AbstractConfig implements Countable, IteratorAggregate
     }
 
     /**
+     * Get the config based on the configuration and
+     * behaviour settings
+     *
      * @return array
      */
     public function getConfig($validation = true)
