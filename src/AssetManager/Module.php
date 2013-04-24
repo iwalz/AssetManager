@@ -2,6 +2,8 @@
 
 namespace AssetManager;
 
+use AssetManager\CacheBusting\Config;
+use AssetManager\CacheBusting\RewriteContent;
 use Zend\Http\Response;
 use Zend\Loader\StandardAutoloader;
 use Zend\Loader\AutoloaderFactory;
@@ -42,6 +44,24 @@ class Module implements
     public function getConfig()
     {
         return include __DIR__ . '/../../config/module.config.php';
+    }
+
+    /**
+     * Callback method to rewrite the img tags
+     *
+     * @param MvcEvent $event
+     */
+    public function onResponse(MvcEvent $event)
+    {
+        $response = $event->getResponse();
+        $serviceManager     = $event->getApplication()->getServiceManager();
+
+        $cacheBustingConfig = new Config($serviceManager->get('Config'));
+        if ($cacheBustingConfig->isEnabled()) {
+            $rewriteContent = new RewriteContent($response);
+            $rewriteContent->setCache($serviceManager->get('AssetManager\CacheBusting\Cache'));
+            $rewriteContent->addCacheBustingTag();
+        }
     }
 
     /**
@@ -103,9 +123,11 @@ class Module implements
     public function onBootstrap(EventInterface $event)
     {
         // Attach for dispatch, and dispatch.error (with low priority to make sure statusCode gets set)
-        $eventManager = $event->getTarget()->getEventManager();
-        $callback     = array($this, 'onDispatch');
-        $priority     = -9999999;
+        $eventManager       = $event->getTarget()->getEventManager();
+        $callback           = array($this, 'onDispatch');
+        $rewriteResponse    = array($this, 'onResponse');
+        $priority           = -9999999;
+        $eventManager->attach(MvcEvent::EVENT_FINISH,         $rewriteResponse);
         $eventManager->attach(MvcEvent::EVENT_DISPATCH,       $callback, $priority);
         $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, $callback, $priority);
     }
