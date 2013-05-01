@@ -18,11 +18,17 @@ class RequestInspector
     protected $request = null;
 
     /**
+     * @var bool
+     */
+    protected $stripped = null;
+
+    /**
      * @param Request $request
      */
     public function __construct( Request $request = null)
     {
         $this->request = $request;
+        $this->stripped = false;
     }
 
     /**
@@ -95,6 +101,12 @@ class RequestInspector
         $pos            = strpos($uri->getPath(), ';AM');
 
         $uri->setPath(substr($uri->getPath(), 0, $pos));
+        $this->stripped = true;
+    }
+
+    public function isStripped()
+    {
+        return $this->stripped;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace AssetManager\Service;
 
 use AssetManager\CacheBusting\AssetCacheBustingManager;
+use AssetManager\CacheBusting\CacheBustingFilter;
 use Assetic\Asset\AssetInterface;
 use AssetManager\Service\AssetFilterManagerAwareInterface;
 use AssetManager\CacheControl\CacheController;
@@ -42,7 +43,7 @@ class AssetManager implements
     protected $cacheController;
 
     /**
-     * @var CacheBustingManager
+     * @var AssetCacheBustingManager
      */
     protected $cacheBustingManager;
 
@@ -109,7 +110,7 @@ class AssetManager implements
     }
 
     /**
-     * @return CacheBustingManager
+     * @return AssetCacheBustingManager
      */
     public function getCacheBustingManager()
     {
@@ -174,6 +175,16 @@ class AssetManager implements
             throw new Exception\RuntimeException('Expected property "mimetype" on asset.');
         }
 
+        if (!is_null($this->cacheBustingManager)) {
+            $cacheBustingFilter = new CacheBustingFilter();
+            $cache = $this->getCacheBustingManager()->getCacheController()->getResponseModifier()->getCache();
+
+            if (!is_null($cache)) {
+
+                $cacheBustingFilter->setCache($cache);
+                $this->getAssetFilterManager()->addFilter($cacheBustingFilter);
+            }
+        }
         $this->getAssetFilterManager()->setFilters($this->path, $this->asset);
 
         $this->asset    = $this->getAssetCacheManager()->setCache($this->path, $this->asset);

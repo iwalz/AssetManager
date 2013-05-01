@@ -28,6 +28,11 @@ class AssetFilterManager implements ServiceLocatorAwareInterface, MimeResolverAw
     protected $mimeResolver;
 
     /**
+     * @var array
+     */
+    protected $filters = array();
+
+    /**
      * Construct the AssetFilterManager
      *
      * @param   array $config
@@ -76,12 +81,22 @@ class AssetFilterManager implements ServiceLocatorAwareInterface, MimeResolverAw
             $extension = $this->getMimeResolver()->getExtension($asset->mimetype);
             if (!empty($config[$extension])) {
                 $filters = $config[$extension];
+            } elseif($this->filters !== array()) {
+                $filters = $this->filters;
             } else {
                 return;
             }
         }
 
+        #$filters = array_merge($filters, $this->filters);
+
         foreach ($filters as $filter) {
+            if($filter instanceof FilterInterface) {
+                $this->ensureByFilter($asset, $filter);
+
+                return;
+            }
+
             if (!empty($filter['filter'])) {
                 $this->ensureByFilter($asset, $filter['filter']);
             } elseif(!empty($filter['service'])) {
@@ -176,5 +191,21 @@ class AssetFilterManager implements ServiceLocatorAwareInterface, MimeResolverAw
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
         $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilter()
+    {
+        return $this->filters;
+    }
+
+    /**
+     * @param FilterInterface $filter
+     */
+    public function addFilter(FilterInterface $filter)
+    {
+        $this->filters[] = $filter;
     }
 }

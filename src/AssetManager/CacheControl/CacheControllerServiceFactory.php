@@ -33,6 +33,7 @@ class CacheControllerServiceFactory implements FactoryInterface
         $checksumHandler = new ChecksumHandler();
         $responseModifier->setChecksumHandler($checksumHandler);
         $responseModifier->setConfig($config);
+        $responseModifier->setRequestInspector($requestInspector);
         $cacheController->setRequestInspector($requestInspector);
         $cacheController->setResponseModifier($responseModifier);
 

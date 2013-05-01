@@ -28,6 +28,7 @@ class HeadLinkServiceFactory implements FactoryInterface
 
         if (
             isset($config['cache_busting']['enabled'])
+            && $config['cache_busting']['enabled']
         ) {
 
             return new HeadLink($serviceLocator->getServiceLocator());

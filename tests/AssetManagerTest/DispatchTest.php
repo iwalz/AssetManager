@@ -35,6 +35,7 @@ class DispatchTest extends AbstractControllerTestCase
     {
         $config = $this->getApplicationServiceLocator()->get('Config');
         $config['asset_manager']['cache_control']['enabled'] = true;
+        $config['asset_manager']['cache_busting']['validation_lifetime'] = 60;
         $this->getApplicationServiceLocator()->setAllowOverride(true);
         $this->getApplicationServiceLocator()->setService('Config', $config);
         $request = $this->getApplication()->getRequest();

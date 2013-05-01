@@ -53,6 +53,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $mimeResolver       = new MimeResolver();
         $asset              = new Asset\FileAsset(__FILE__);
         $asset->mimetype    = 'application/javascript';
+        $responseModifier->setRequestInspector($requestInspector);
         $config->setAsset($asset);
         $config->setMimeResolver($mimeResolver);
         $config->setPath('foo.jpg');

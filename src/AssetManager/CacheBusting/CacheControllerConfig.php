@@ -45,4 +45,5 @@ class CacheControllerConfig extends CacheControlConfig
 
         return $config['validation_lifetime'];
     }
+
 }

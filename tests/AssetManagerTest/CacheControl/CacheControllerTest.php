@@ -143,6 +143,7 @@ class CacheControllerTest extends PHPUnit_Framework_TestCase
 
         $responseModifier->setResponse($response);
         $responseModifier->setChecksumHandler($checksumHandler);
+        $responseModifier->setRequestInspector($requestInspector);
         $cacheController->setRequestInspector($requestInspector);
         $cacheController->setResponseModifier($responseModifier);
         $cacheController->setConfig($config);
@@ -211,6 +212,7 @@ class CacheControllerTest extends PHPUnit_Framework_TestCase
 
         $responseModifier->setResponse($response);
         $responseModifier->setChecksumHandler($checksumHandler);
+        $responseModifier->setRequestInspector($requestInspector);
         $cacheController->setRequestInspector($requestInspector);
         $cacheController->setResponseModifier($responseModifier);
         $cacheController->setConfig($config);

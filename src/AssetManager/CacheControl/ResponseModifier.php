@@ -36,6 +36,11 @@ class ResponseModifier
     protected $cache = null;
 
     /**
+     * @var RequestInspector
+     */
+    protected $requestInspector = null;
+
+    /**
      * @param Response $response
      */
     public function __construct(Response $response = null)
@@ -133,7 +138,9 @@ class ResponseModifier
         $etag = $this->checksumHandler->getChecksum();
         $headers->addHeaderLine('ETag', $etag);
 
-        if (!is_null($this->cache)) {
+        if (!$this->requestInspector->isCacheBustingRequest()
+            && !$this->requestInspector->isStripped()
+            && $this->config instanceof \AssetManager\CacheBusting\CacheControllerConfig) {
             $this->cache->ttl = $this->config->getValidationLifetime();
             $this->cache->set($asset->getSourcePath() . '_etag', $etag);
             $this->cache->set($asset->getSourcePath() . '_lastmodified', $lastModified);
@@ -156,4 +163,19 @@ class ResponseModifier
         return $this->cache;
     }
 
+    /**
+     * @param RequestInspector $requestInspector
+     */
+    public function setRequestInspector(RequestInspector $requestInspector)
+    {
+        $this->requestInspector = $requestInspector;
+    }
+
+    /**
+     * @return RequestInspector|null
+     */
+    public function getRequestInspector()
+    {
+        return $this->requestInspector;
+    }
 }
