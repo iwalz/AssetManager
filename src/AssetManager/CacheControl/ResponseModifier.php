@@ -7,6 +7,7 @@ use Assetic\Asset\AssetInterface;
 use Assetic\Cache\CacheInterface;
 use Zend\Http\Response;
 use AssetManager\Checksum\ChecksumHandler;
+use Assetic\Asset\AssetCollection;
 
 /**
  * Modifies a response
