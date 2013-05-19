@@ -118,7 +118,7 @@ class CollectionResolver implements
             );
         }
 
-        $collection = new AssetCollection;
+        $collection = new AssetCollection(array(), array(), $name);
         $mimeType   = null;
 
         foreach ($this->collections[$name] as $asset) {

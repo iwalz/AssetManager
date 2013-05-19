@@ -142,8 +142,16 @@ class ResponseModifier
             && !$this->requestInspector->isStripped()
             && $this->config instanceof \AssetManager\CacheBusting\CacheControllerConfig) {
             $this->cache->ttl = $this->config->getValidationLifetime();
-            $this->cache->set($asset->getSourcePath() . '_etag', $etag);
-            $this->cache->set($asset->getSourcePath() . '_lastmodified', $lastModified);
+
+            if ($asset instanceof AssetCollection) {
+                $index = $asset->getSourceRoot();
+                $index = substr($index, strrpos($index, '/')+1);
+            } else {
+                $index = $asset->getSourcePath();
+            }
+
+            $this->cache->set($index . '_etag', $etag);
+            $this->cache->set($index . '_lastmodified', $lastModified);
         }
     }
 
