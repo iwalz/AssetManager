@@ -88,7 +88,7 @@ class AssetFilterManager implements ServiceLocatorAwareInterface, MimeResolverAw
             }
         }
 
-        #$filters = array_merge($filters, $this->filters);
+        $filters = array_merge($filters, $this->filters);
 
         foreach ($filters as $filter) {
             if($filter instanceof FilterInterface) {

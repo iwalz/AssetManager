@@ -179,8 +179,7 @@ class AssetManager implements
             $cacheBustingFilter = new CacheBustingFilter();
             $cache = $this->getCacheBustingManager()->getCacheController()->getResponseModifier()->getCache();
 
-            if (!is_null($cache)) {
-
+            if (!is_null($cache) && $this->asset->mimetype == 'text/css') {
                 $cacheBustingFilter->setCache($cache);
                 $this->getAssetFilterManager()->addFilter($cacheBustingFilter);
             }
