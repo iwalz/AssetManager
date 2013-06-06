@@ -120,6 +120,7 @@ class CollectionResolver implements
 
         $collection = new AssetCollection(array(), array(), $name);
         $mimeType   = null;
+        $collection->setTargetPath($name);
 
         foreach ($this->collections[$name] as $asset) {
 
