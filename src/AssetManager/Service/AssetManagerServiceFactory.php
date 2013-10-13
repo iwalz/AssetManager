@@ -41,7 +41,6 @@ class AssetManagerServiceFactory implements FactoryInterface
 
         $cacheControlConfig = new CacheControlConfig($config);
         $cacheBustingConfig = new CacheBustingConfig($config);
-        var_dump($cacheBustingConfig);
 
         if ($cacheControlConfig->isEnabled()) {
             $assetManager->setCacheController($serviceLocator->get('AssetManager\CacheControl\CacheController'));
